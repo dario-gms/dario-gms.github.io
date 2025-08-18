@@ -41,6 +41,45 @@ body {
     box-shadow: var(--shadow);
 }
 
+.logo {
+    padding: 1.5rem;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.chapters {
+    padding: 1rem 0;
+}
+
+.chapter-item {
+    padding: 0.8rem 1.5rem;
+    border-left: 4px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chapter-item:hover {
+    background: rgba(1, 117, 194, 0.05);
+}
+
+.chapter-item.active {
+    background: rgba(1, 117, 194, 0.1);
+    border-left: 4px solid var(--primary);
+    color: var(--primary);
+    font-weight: 500;
+}
+
 .main-content {
     padding: 2rem;
     max-width: 900px;
@@ -48,7 +87,6 @@ body {
     width: 100%;
 }
 
-/* Estilos para o conteúdo do capítulo */
 .chapter-content {
     background: white;
     border-radius: 8px;
@@ -57,4 +95,26 @@ body {
     margin-bottom: 2rem;
 }
 
-/* Adicione todos os outros estilos necessários */
+.dartpad-container {
+    margin: 1.5rem 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.dartpad-header {
+    background: var(--primary);
+    color: white;
+    padding: 0.7rem 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.run-button {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
