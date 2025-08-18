@@ -3,8 +3,8 @@
 class DartGuideApp {
     constructor() {
         this.chapters = [
-            { id: 1, title: "Introdução ao Dart", icon: "play-circle" },
-            { id: 2, title: "Fundamentos e Sintaxe", icon: "code" },
+            { id: 1, title: "Introdução ao Dart", icon: "play-circle", file: "1-introducao.html" },
+            { id: 2, title: "Fundamentos e Sintaxe", icon: "code", file: "2-fundamentos.html"},
             { id: 3, title: "Controle de Fluxo", icon: "random" },
             { id: 4, title: "Funções", icon: "function" },
             { id: 5, title: "Coleções", icon: "list" },
@@ -56,7 +56,8 @@ class DartGuideApp {
 
     async loadChapter(chapterId) {
         try {
-            const response = await fetch(`chapters/${chapterId}-introducao.html`);
+            const chapter = this.chapters.find(c => c.id == chapterId);
+            const response = await fetch(`chapters/${chapter.file}`);
             const content = await response.text();
             document.getElementById('content-container').innerHTML = content;
             this.setActiveChapter(chapterId);
