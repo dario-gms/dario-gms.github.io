@@ -1,1 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 1: Introdução ao Dart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        .chapter-header {
+            background-color: #0175C2;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chapter-title {
+            margin: 0;
+            font-size: 2.2em;
+        }
+        
+        .chapter-subtitle {
+            margin: 10px 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .chapter-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .content-section {
+            margin-bottom: 40px;
+        }
+        
+        h2 {
+            color: #0175C2;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #025E9B;
+            margin-top: 25px;
+        }
+        
+        p, li {
+            font-size: 1.05em;
+        }
+        
+        code {
+            background-color: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 4px solid #0175C2;
+        }
+        
+        .dartpad-container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dartpad-header {
+            background-color: #f5f5f5;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .dartpad-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .run-button {
+            background-color: #0175C2;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .run-button:hover {
+            background-color: #025E9B;
+        }
+        
+        .dartpad {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .nav-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-button.next-button {
+            background-color: #0175C2;
+            color: white;
+        }
+        
+        .nav-button.next-button:hover {
+            background-color: #025E9B;
+        }
+        
+        .nav-button.disabled {
+            background-color: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .note {
+            background-color: #e7f4ff;
+            border-left: 4px solid #0175C2;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .warning {
+            background-color: #fff8e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .exercise {
+            background-color: #f0f8f0;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .answer {
+            background-color: #f5f5f5;
+            border-left: 4px solid #9E9E9E;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .summary-item {
+            margin-bottom: 10px;
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .summary-item:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #0175C2;
+        }
+    </style>
+</head>
+<body>
+    <div class="chapter-header">
+        <h1 class="chapter-title">Capítulo 1: Introdução ao Dart</h1>
+        <p class="chapter-subtitle">O que é Dart, História Breve, Quando Usar, Instalação do SDK e Primeiro Hello World</p>
+    </div>
 
+    <div class="chapter-content">
+        <section class="content-section">
+            <h2 id="o-que-é-dart">O que é Dart</h2>
+            <p>Dart é uma linguagem de programação moderna, criada pelo Google, projetada para ser fácil de aprender e poderosa o suficiente para criar aplicações complexas. Pense em Dart como uma ferramenta versátil, assim como um canivete suíço pode cortar, abrir latas e apertar parafusos, Dart pode criar aplicativos móveis, sites, servidores e programas de linha de comando.</p>
+            
+            <h3>Características Principais</h3>
+            <ul>
+                <li><strong>Orientada a objetos</strong>: Tudo em Dart é um objeto, facilitando a organização do código</li>
+                <li><strong>Null-safety</strong>: Sistema que previne erros comuns relacionados a valores nulos</li>
+                <li><strong>Compilada e interpretada</strong>: Pode rodar diretamente (modo desenvolvimento) ou ser compilada para máxima performance</li>
+                <li><strong>Sintaxe familiar</strong>: Similar a Java, C# e JavaScript, facilitando a transição</li>
+            </ul>
+            
+            <div class="dartpad-container">
+                <div class="dartpad-header">
+                    <span>DartPad</span>
+                    <div class="dartpad-actions">
+                        <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                    </div>
+                </div>
+                <iframe class="dartpad" src="https://dartpad.dev/embed.html?id=1b5d5a9f5c7e0a7c8e7c2e3c5e5f5a5b5&theme=light"></iframe>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2 id="história-breve-da-linguagem">História Breve da Linguagem</h2>
+            <p>Dart nasceu em 2011 dentro do Google, criada por uma equipe liderada por Lars Bak e Kasper Lund. A ideia inicial era resolver problemas do JavaScript no desenvolvimento web, mas a linguagem evoluiu muito além disso.</p>
+            
+            <h3>Marcos importantes:</h3>
+            <ul>
+                <li><strong>2011</strong>: Anúncio público do Dart</li>
+                <li><strong>2013</strong>: Primeira versão estável (1.0)</li>
+                <li><strong>2018</strong>: Dart 2.0 com sistema de tipos mais robusto</li>
+                <li><strong>2021</strong>: Dart 2.12 introduz null-safety obrigatório</li>
+                <li><strong>2023</strong>: Dart 3.0 com recursos avançados como records e patterns</li>
+            </ul>
+            
+            <p>Hoje, Dart é mais conhecida como a linguagem por trás do Flutter, mas sua aplicação vai muito além do desenvolvimento mobile.</p>
+        </section>
+
+        <section class="content-section">
+            <h2 id="quando-e-onde-usar-dart">Quando e Onde Usar Dart</h2>
+            
+            <h3>Use Dart quando você quer:</h3>
+            <ul>
+                <li><strong>Desenvolvimento mobile</strong>: Flutter permite criar apps iOS e Android com uma única base de código</li>
+                <li><strong>Aplicações web</strong>: Dart compila para JavaScript moderno e eficiente</li>
+                <li><strong>Servidores e APIs</strong>: Excelente performance para backend</li>
+                <li><strong>Scripts e automação</strong>: Ideal para tarefas automatizadas</li>
+                <li><strong>Prototipagem rápida</strong>: Sintaxe simples acelera o desenvolvimento</li>
+            </ul>
+            
+            <h3>Não use Dart para:</h3>
+            <ul>
+                <li><strong>Sistemas embarcados</strong>: Ainda limitado neste nicho</li>
+                <li><strong>Inteligência artificial/Machine Learning</strong>: Ecossistema menor comparado ao Python</li>
+                <li><strong>Jogos AAA</strong>: Unity (C#) e Unreal (C++) dominam esse mercado</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2 id="dartpad-seu-primeiro-ambiente">DartPad: Seu Primeiro Ambiente</h2>
+            <p>O DartPad é um editor online gratuito onde você pode escrever e executar código Dart sem instalar nada. É como um caderno digital para programação.</p>
+            
+            <h3>Para usar o DartPad:</h3>
+            <ol>
+                <li>Acesse <a href="https://dartpad.dev" target="_blank">https://dartpad.dev</a></li>
+                <li>Escreva seu código na área à esquerda</li>
+                <li>Clique em "Run" para executar</li>
+                <li>Veja o resultado na área "Console" à direita</li>
+            </ol>
+            
+            <div class="note">
+                <strong>Dica:</strong> O DartPad é perfeito para aprender e testar pequenos trechos de código. Para projetos maiores, considere instalar o Dart SDK.
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2 id="instalação-do-dart-sdk">Instalação do Dart SDK</h2>
+            
+            <h3>Windows</h3>
+            <ol>
+                <li>Acesse <a href="https://dart.dev/get-dart" target="_blank">https://dart.dev/get-dart</a></li>
+                <li>Baixe o instalador para Windows</li>
+                <li>Execute o instalador e siga as instruções</li>
+                <li>Abra o Prompt de Comando e digite <code>dart --version</code> para verificar</li>
+            </ol>
+            
+            <h3>macOS</h3>
+            <pre><code>brew install dart</code></pre>
+            <p>Ou baixe o instalador do site oficial.</p>
+            
+            <h3>Linux (Ubuntu/Debian)</h3>
+            <pre><code>sudo apt update
+sudo apt install dart</code></pre>
+            
+            <h3>Verificação da Instalação</h3>
+            <p>Após instalar, execute no terminal:</p>
+            <pre><code>dart --version</code></pre>
+            <p>Você deve ver algo como: <code>Dart SDK version: 3.1.0</code></p>
+        </section>
+
+        <section class="content-section">
+            <h2 id="exemplos-práticos">Exemplos Práticos</h2>
+            
+            <h3>Exemplo 1 — Primeiro Hello World Básico</h3>
+            <pre><code>void main() {
+  print('Hello, World!');
+}</code></pre>
+            <p><strong>Arquivo sugerido:</strong> <code>hello_world.dart</code></p>
+            <p><strong>DartPad:</strong> Cole o código acima e clique em "Run"</p>
+            <p><strong>Execução local:</strong> <code>dart run hello_world.dart</code></p>
+            <p><strong>Explicação:</strong></p>
+            <ul>
+                <li><code>void main()</code> é o ponto de entrada do programa — onde tudo começa</li>
+                <li><code>print()</code> é uma função que exibe texto no console</li>
+                <li>Toda instrução em Dart termina com <code>;</code> (ponto e vírgula)</li>
+            </ul>
+            <p><strong>Experimente:</strong> Troque "Hello, World!" por seu nome e execute novamente.</p>
+            
+            <div class="dartpad-container">
+                <div class="dartpad-header">
+                    <span>DartPad - Hello World</span>
+                    <div class="dartpad-actions">
+                        <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                    </div>
+                </div>
+                <iframe class="dartpad" src="https://dartpad.dev/embed.html?id=1b5d5a9f5c7e0a7c8e7c2e3c5e5f5a5b5&theme=light"></iframe>
+            </div>
+            
+            <h3>Exemplo 2 — Hello World com Variáveis</h3>
+            <pre><code>void main() {
+  String nome = 'João';
+  int idade = 25;
+  
+  print('Olá, meu nome é $nome e tenho $idade anos!');
+}</code></pre>
+            <p><strong>Arquivo sugerido:</strong> <code>hello_variaveis.dart</code></p>
+            <p><strong>DartPad:</strong> Cole e clique em "Run"</p>
+            <p><strong>Execução local:</strong> <code>dart run hello_variaveis.dart</code></p>
+            <p><strong>Explicação:</strong></p>
+            <ul>
+                <li><code>String nome = 'João'</code> cria uma variável de texto</li>
+                <li><code>int idade = 25</code> cria uma variável de número inteiro</li>
+                <li><code>$nome</code> e <code>$idade</code> são interpolações, inserem o valor da variável no texto</li>
+            </ul>
+            <p><strong>Experimente:</strong> Mude os valores das variáveis e observe o resultado.</p>
+            
+            <!-- Continue com os outros exemplos seguindo o mesmo padrão -->
+            
+            <div class="warning">
+                <strong>Atenção:</strong> Sempre termine suas instruções com ponto e vírgula. Esquecer isso é um dos erros mais comuns para iniciantes.
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2 id="boas-práticas-e-advertências">Boas Práticas e Advertências</h2>
+            
+            <h3>✅ Faça Assim:</h3>
+            <ul>
+                <li><strong>Use nomes descritivos</strong>: <code>nomeUsuario</code> em vez de <code>n</code></li>
+                <li><strong>Adicione comentários</strong>: <code>// Calcula a média das notas</code></li>
+                <li><strong>Formate o código</strong>: Use indentação consistente</li>
+                <li><strong>Teste no DartPad</strong>: Sempre verifique se funciona antes de salvar</li>
+            </ul>
+            
+            <h3>❌ Evite Isso:</h3>
+            <ul>
+                <li><strong>Nomes genéricos</strong>: <code>data</code>, <code>info</code>, <code>temp</code></li>
+                <li><strong>Linhas muito longas</strong>: Quebre em múltiplas linhas se necessário</li>
+                <li><strong>Código sem <code>main()</code></strong>: Não funcionará no DartPad</li>
+                <li><strong>Ignorar erros</strong>: Se aparece em vermelho, corrija antes de continuar</li>
+            </ul>
+            
+            <h3>Erros Comuns de Iniciantes:</h3>
+            <ol>
+                <li><strong>Esquecer o ponto e vírgula</strong>: Toda instrução termina com <code>;</code></li>
+                <li><strong>Maiúsculas e minúsculas</strong>: <code>Print</code> não é o mesmo que <code>print</code></li>
+                <li><strong>Aspas não fechadas</strong>: <code>'Hello World</code> está incompleto</li>
+                <li><strong>Parênteses não fechados</strong>: <code>print('Hello'</code> falta um <code>)</code></li>
+            </ol>
+        </section>
+
+        <section class="content-section">
+            <h2 id="exercícios-práticos">Exercícios Práticos</h2>
+            
+            <div class="exercise">
+                <h3>Exercício 1</h3>
+                <p>Crie um programa que imprima seu nome, idade e cidade. Use interpolação de strings.</p>
+            </div>
+            
+            <div class="exercise">
+                <h3>Exercício 2</h3>
+                <p>Faça uma calculadora que some três números diferentes e mostre o resultado.</p>
+            </div>
+            
+            <div class="exercise">
+                <h3>Exercício 3</h3>
+                <p>Crie uma lista com os nomes de 5 frutas e imprima cada uma com uma mensagem de "Eu gosto de [fruta]".</p>
+            </div>
+            
+            <div class="exercise">
+                <h3>Exercício 4</h3>
+                <p>Desenvolva um programa que calcule a área de um retângulo (largura × altura) e mostre o resultado formatado.</p>
+            </div>
+            
+            <div class="exercise">
+                <h3>Exercício 5</h3>
+                <p>Crie um sistema que armazene informações de 3 livros (título, autor, ano) e imprima um relatório organizado.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2 id="resumo">Resumo</h2>
+            
+            <div class="summary-item"><strong>Dart é uma linguagem moderna</strong> criada pelo Google, ideal para iniciantes e profissionais</div>
+            <div class="summary-item"><strong>DartPad é seu melhor amigo</strong> para aprender: use <a href="https://dartpad.dev" target="_blank">https://dartpad.dev</a></div>
+            <div class="summary-item"><strong>Todo programa Dart precisa de main()</strong> é o ponto de partida</div>
+            <div class="summary-item"><strong>Interpolação com $</strong> facilita a criação de textos dinâmicos</div>
+            <div class="summary-item"><strong>Tipos básicos incluem</strong> String, int, double, bool, List e Map</div>
+            <div class="summary-item"><strong>Dart serve para muito mais</strong> que Flutter: web, servidor, scripts</div>
+            <div class="summary-item"><strong>Practice makes perfect</strong> — execute todos os exemplos no DartPad</div>
+            <div class="summary-item"><strong>Null-safety previne erros</strong> comuns em outras linguagens</div>
+            <div class="summary-item"><strong>Sintaxe familiar</strong> facilita a transição de outras linguagens</div>
+            <div class="summary-item"><strong>Ecossistema em crescimento</strong> com muitas oportunidades no mercado</div>
+        </section>
+
+        <div class="chapter-nav">
+            <button class="nav-button disabled"><i class="fas fa-arrow-left"></i> Anterior</button>
+            <button class="nav-button next-button">Próximo <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // Adicione interatividade aos botões de execução do DartPad
+        document.querySelectorAll('.run-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const iframe = this.closest('.dartpad-container').querySelector('.dartpad');
+                iframe.contentWindow.postMessage('run', '*');
+            });
+        });
+        
+        // Navegação entre capítulos
+        document.querySelector('.next-button').addEventListener('click', function() {
+            alert('Você será redirecionado para o próximo capítulo!');
+            // window.location.href = 'cap-2-fundamentos-sintaxe.html';
+        });
+    </script>
+</body>
+</html>
