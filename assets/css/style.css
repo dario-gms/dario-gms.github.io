@@ -1,0 +1,60 @@
+:root {
+    --primary: #0175C2;
+    --primary-dark: #02569B;
+    --secondary: #13B9FD;
+    --light: #f8f9fa;
+    --dark: #202124;
+    --gray: #5f6368;
+    --success: #34A853;
+    --warning: #FBBC05;
+    --danger: #EA4335;
+    --border: #dadce0;
+    --shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--dark);
+    background-color: var(--light);
+}
+
+.app-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+}
+
+.sidebar {
+    background: white;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    box-shadow: var(--shadow);
+}
+
+.main-content {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Estilos para o conteúdo do capítulo */
+.chapter-content {
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Adicione todos os outros estilos necessários */
