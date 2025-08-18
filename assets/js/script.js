@@ -3,7 +3,7 @@ class DartGuideApp {
         this.chapters = [
             { id: 1, title: "Introdução ao Dart", icon: "play-circle", file: "1-introducao.html" },
             { id: 2, title: "Fundamentos e Sintaxe", icon: "code", file: "2-fundamentos.html" },
-            { id: 3, title: "Controle de Fluxo", icon: "random", "3-controle.html" },
+            { id: 3, title: "Controle de Fluxo", icon: "random", file: "3-controle.html" },
             { id: 4, title: "Funções", icon: "function" },
             { id: 5, title: "Coleções", icon: "list" },
             { id: 6, title: "Orientação a Objetos", icon: "object-group" },
