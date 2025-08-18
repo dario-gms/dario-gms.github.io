@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 2: Variáveis, Tipos e Operadores</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="chapter-header">
+        <h1 class="chapter-title">Capítulo 2: Variáveis, Tipos e Operadores</h1>
+        <p class="chapter-subtitle">Variáveis, Tipos Primitivos, Operadores, Comentários e Convenções de Nome</p>
+    </div>
+
+    <div class="chapter-content">
+        <div class="chapter-objectives">
+            <h2>Objetivos do Capítulo</h2>
+            <ol class="objectives-list">
+                <li>Entender como criar e usar variáveis em Dart</li>
+                <li>Conhecer os tipos primitivos fundamentais (int, double, String, bool)</li>
+                <li>Aprender operadores aritméticos, lógicos e de comparação</li>
+                <li>Dominar diferentes tipos de comentários no código</li>
+                <li>Aplicar convenções de nomenclatura profissionais</li>
+                <li>Trabalhar com interpolação de strings</li>
+            </ol>
+        </div>
+
+        <div class="prerequisites">
+            <h2>Pré-requisitos</h2>
+            <ul class="prereq-list">
+                <li>Conhecimento básico de programação (variáveis e funções)</li>
+                <li>Acesso ao DartPad (https://dartpad.dev) ou Dart SDK 3.0+ instalado localmente</li>
+                <li>Ter completado o Capítulo 1 (conceitos básicos de Dart)</li>
+            </ul>
+        </div>
+
+        <section class="content-section">
+            <h2>1. Variáveis e Declarações</h2>
+            <p>Uma <strong>variável</strong> é como uma gaveta com etiqueta onde guardamos informações. Em Dart, podemos declarar variáveis de várias formas:</p>
+            
+            <h3>Declaração Explícita</h3>
+            <div class="code-block">
+                <pre><code>int idade = 25;        // Número inteiro
+String nome = "Ana";   // Texto</code></pre>
+            </div>
+
+            <h3>Declaração com <code>var</code></h3>
+            <div class="code-block">
+                <pre><code>var cidade = "São Paulo";  // Dart deduz que é String
+var altura = 1.75;         // Dart deduz que é double</code></pre>
+            </div>
+
+            <h3>Declaração com <code>final</code> e <code>const</code></h3>
+            <ul class="feature-list">
+                <li><strong>final</strong>: valor definido uma vez durante execução</li>
+                <li><strong>const</strong>: valor definido na compilação (constante de tempo de compilação)</li>
+            </ul>
+            <div class="code-block">
+                <pre><code>final dataAtual = DateTime.now();  // Definido na execução
+const pi = 3.14159;               // Definido na compilação</code></pre>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>2. Tipos Primitivos</h2>
+            <p>Dart possui tipos fundamentais para representar dados básicos:</p>
+            
+            <div class="use-cases">
+                <div class="use-case">
+                    <h3>int (Números Inteiros)</h3>
+                    <p>Representa números sem casas decimais: -10, 0, 42, 1000.</p>
+                </div>
+                
+                <div class="use-case">
+                    <h3>double (Números Decimais)</h3>
+                    <p>Representa números com casas decimais: 3.14, -0.5, 100.0.</p>
+                </div>
+                
+                <div class="use-case">
+                    <h3>String (Texto)</h3>
+                    <p>Representa sequências de caracteres: "Olá", 'Mundo', "123".</p>
+                </div>
+                
+                <div class="use-case">
+                    <h3>bool (Verdadeiro/Falso)</h3>
+                    <p>Representa valores lógicos: <code>true</code> ou <code>false</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>3. Operadores</h2>
+            
+            <h3>Operadores Aritméticos</h3>
+            <ul class="feature-list">
+                <li><code>+</code> (soma), <code>-</code> (subtração), <code>*</code> (multiplicação)</li>
+                <li><code>/</code> (divisão), <code>~/</code> (divisão inteira), <code>%</code> (resto da divisão)</li>
+            </ul>
+
+            <h3>Operadores de Comparação</h3>
+            <ul class="feature-list">
+                <li><code>==</code> (igual), <code>!=</code> (diferente)</li>
+                <li><code>&gt;</code> (maior), <code>&lt;</code> (menor), <code>&gt;=</code> (maior ou igual), <code>&lt;=</code> (menor ou igual)</li>
+            </ul>
+
+            <h3>Operadores Lógicos</h3>
+            <ul class="feature-list">
+                <li><code>&amp;&amp;</code> (E lógico), <code>||</code> (OU lógico), <code>!</code> (NÃO lógico)</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>4. Comentários</h2>
+            
+            <h3>Comentário de Linha</h3>
+            <div class="code-block">
+                <pre><code>// Este é um comentário de linha
+int x = 10;  // Comentário ao lado do código</code></pre>
+            </div>
+
+            <h3>Comentário de Bloco</h3>
+            <div class="code-block">
+                <pre><code>/*
+Este é um comentário
+que ocupa múltiplas
+linhas
+*/</code></pre>
+            </div>
+
+            <h3>Comentário de Documentação</h3>
+            <div class="code-block">
+                <pre><code>/// Calcula a área de um retângulo
+/// [largura] e [altura] devem ser positivos
+double calcularArea(double largura, double altura) {
+  return largura * altura;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>5. Convenções de Nomenclatura</h2>
+            
+            <h3>Variáveis e Funções: camelCase</h3>
+            <div class="code-block">
+                <pre><code>int idadeUsuario = 25;
+String nomeCompleto = "João Silva";
+void calcularDesconto() { }</code></pre>
+            </div>
+
+            <h3>Classes: PascalCase</h3>
+            <div class="code-block">
+                <pre><code>class ContaBancaria { }
+class CalculadoraJuros { }</code></pre>
+            </div>
+
+            <h3>Constantes: camelCase ou SCREAMING_SNAKE_CASE</h3>
+            <div class="code-block">
+                <pre><code>const double pi = 3.14159;
+const int MAX_TENTATIVAS = 3;</code></pre>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>6. Exemplos Práticos</h2>
+
+            <div class="example">
+                <h3>Exemplo 1 — Variáveis Básicas e Tipos</h3>
+                <div class="dartpad-container">
+                    <div class="dartpad-header">
+                        <span>DartPad - Variáveis Básicas</span>
+                        <div class="dartpad-actions">
+                            <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                            <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  // Declarações básicas
+  int idade = 28;
+  double altura = 1.75;
+  String nome = "Carlos";
+  bool ativo = true;
+  
+  // Usando var (inferência de tipo)
+  var cidade = "Rio de Janeiro";
+  var salario = 3500.50;
+  
+  // Constantes
+  final agora = DateTime.now();
+  const pi = 3.14159;
+  
+  // Exibindo valores
+  print("Nome: $nome");
+  print("Idade: $idade anos");
+  print("Altura: ${altura}m");
+  print("Ativo: $ativo");
+  print("Cidade: $cidade");
+  print("Salário: R\$ $salario");
+  print("Agora: $agora");
+  print("Pi: $pi");
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong> Este exemplo mostra diferentes formas de declarar variáveis. <code>int</code>, <code>double</code>, <code>String</code> e <code>bool</code> são declarados explicitamente. <code>var</code> permite que Dart deduza o tipo automaticamente. <code>final</code> cria uma variável que só pode ser definida uma vez durante a execução, enquanto <code>const</code> cria uma constante de compilação.</p>
+                    <p><strong>Experimente:</strong> Mude os valores das variáveis, tente atribuir um novo valor a <code>agora</code> ou <code>pi</code> e observe os erros.</p>
+                </div>
+            </div>
+
+            <div class="example">
+                <h3>Exemplo 2 — Operadores Aritméticos</h3>
+                <div class="dartpad-container">
+                    <div class="dartpad-header">
+                        <span>DartPad - Operadores Aritméticos</span>
+                        <div class="dartpad-actions">
+                            <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                            <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  int a = 10;
+  int b = 3;
+  double x = 7.5;
+  double y = 2.5;
+  
+  // Operações com inteiros
+  print("=== Operações com Inteiros ===");
+  print("$a + $b = ${a + b}");
+  print("$a - $b = ${a - b}");
+  print("$a * $b = ${a * b}");
+  print("$a / $b = ${a / b}");      // Resultado é double
+  print("$a ~/ $b = ${a ~/ b}");    // Divisão inteira
+  print("$a % $b = ${a % b}");      // Resto da divisão
+  
+  // Operações com decimais
+  print("\n=== Operações com Decimais ===");
+  print("$x + $y = ${x + y}");
+  print("$x - $y = ${x - y}");
+  print("$x * $y = ${x * y}");
+  print("$x / $y = ${x / y}");
+  
+  // Operações mistas
+  print("\n=== Operações Mistas ===");
+  print("$a + $x = ${a + x}");      // int + double = double
+  print("$b * $y = ${b * y}");      // int * double = double
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong> Demonstra todos os operadores aritméticos. Note que <code>/</code> sempre retorna <code>double</code>, mesmo com inteiros. <code>~/</code> faz divisão inteira (descarta a parte decimal). <code>%</code> retorna o resto da divisão. Operações mistas (int com double) sempre resultam em <code>double</code>.</p>
+                    <p><strong>Experimente:</strong> Teste com números negativos, tente divisão por zero, mude os valores e observe os resultados.</p>
+                </div>
+            </div>
+
+            <div class="example">
+                <h3>Exemplo 3 — Operadores de Comparação e Lógicos</h3>
+                <div class="dartpad-container">
+                    <div class="dartpad-header">
+                        <span>DartPad - Operadores Lógicos</span>
+                        <div class="dartpad-actions">
+                            <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                            <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  int nota1 = 85;
+  int nota2 = 92;
+  int notaMinima = 70;
+  bool temPresenca = true;
+  bool pagouTaxa = false;
+  
+  print("=== Comparações ===");
+  print("Nota 1: $nota1");
+  print("Nota 2: $nota2");
+  print("Nota mínima: $notaMinima");
+  
+  // Operadores de comparação
+  print("\nNota 1 > Nota 2: ${nota1 > nota2}");
+  print("Nota 1 >= Nota mínima: ${nota1 >= notaMinima}");
+  print("Nota 2 == 92: ${nota2 == 92}");
+  print("Nota 1 != Nota 2: ${nota1 != nota2}");
+  
+  print("\n=== Operadores Lógicos ===");
+  print("Tem presença: $temPresenca");
+  print("Pagou taxa: $pagouTaxa");
+  
+  // Operadores lógicos
+  bool aprovado = (nota1 >= notaMinima) && temPresenca;
+  bool podeMatricular = temPresenca && pagouTaxa;
+  bool situacaoIrregular = !temPresenca || !pagouTaxa;
+  
+  print("\nAprovado (nota >= 70 E tem presença): $aprovado");
+  print("Pode matricular (presença E taxa paga): $podeMatricular");
+  print("Situação irregular (SEM presença OU SEM taxa): $situacaoIrregular");
+  
+  // Expressão complexa
+  bool statusFinal = (nota1 >= notaMinima && nota2 >= notaMinima) && 
+                     (temPresenca && pagouTaxa);
+  print("\nStatus final (todas condições): $statusFinal");
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong> Mostra operadores de comparação (<code>&gt;</code>, <code>&gt;=</code>, <code>==</code>, <code>!=</code>) e lógicos (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>). Os operadores lógicos seguem a lógica booleana: <code>&amp;&amp;</code> precisa que ambos sejam verdadeiros, <code>||</code> precisa que pelo menos um seja verdadeiro, <code>!</code> inverte o valor.</p>
+                    <p><strong>Experimente:</strong> Mude os valores de <code>temPresenca</code> e <code>pagouTaxa</code>, altere as notas e observe como os resultados mudam.</p>
+                </div>
+            </div>
+
+            <div class="example">
+                <h3>Exemplo 4 — Strings e Interpolação</h3>
+                <div class="dartpad-container">
+                    <div class="dartpad-header">
+                        <span>DartPad - Strings e Interpolação</span>
+                        <div class="dartpad-actions">
+                            <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                            <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  // Diferentes formas de criar strings
+  String nome = "Maria";
+  String sobrenome = 'Silva';
+  String empresa = """Tecnologia 
+  e Inovação""";  // String multilinha
+  
+  int idade = 30;
+  double salario = 4500.75;
+  bool gerente = true;
+  
+  print("=== Interpolação de Strings ===");
+  
+  // Interpolação simples
+  print("Nome: $nome $sobrenome");
+  print("Idade: $idade anos");
+  
+  // Interpolação com expressões
+  print("Salário: R\$ ${salario.toStringAsFixed(2)}");
+  print("É gerente: ${gerente ? 'Sim' : 'Não'}");
+  print("Empresa: $empresa");
+  
+  // Concatenação
+  String nomeCompleto = nome + " " + sobrenome;
+  print("Nome completo (concatenação): $nomeCompleto");
+  
+  // Operações com strings
+  print("\n=== Operações com Strings ===");
+  print("Tamanho do nome: ${nome.length}");
+  print("Nome em maiúsculas: ${nome.toUpperCase()}");
+  print("Nome em minúsculas: ${nome.toLowerCase()}");
+  print("Contém 'Mar': ${nome.contains('Mar')}");
+  
+  // String com caracteres especiais
+  String caminho = "C:\\Users\\Maria\\Documents";
+  String url = 'https://exemplo.com/api';
+  print("Caminho: $caminho");
+  print("URL: $url");
+  
+  // Template complexo
+  String relatorio = """
+Relatório do Funcionário:
+- Nome: $nome $sobrenome
+- Idade: $idade anos
+- Salário: R\$ ${salario.toStringAsFixed(2)}
+- Cargo: ${gerente ? 'Gerente' : 'Funcionário'}
+- Empresa: $empresa
+""";
+  print(relatorio);
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong> Demonstra criação de strings com aspas simples, duplas e triplas (multilinha). A interpolação permite inserir variáveis com <code>$variavel</code> ou expressões com <code>${expressao}</code>. Mostra métodos úteis de string como <code>length</code>, <code>toUpperCase()</code>, <code>contains()</code>.</p>
+                    <p><strong>Experimente:</strong> Teste diferentes caracteres especiais, crie strings multilinhas, use expressões mais complexas na interpolação.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>7. Boas Práticas</h2>
+            
+            <div class="best-practices">
+                <div class="practice-do">
+                    <h3>✅ Faça Assim:</h3>
+                    <ul>
+                        <li><strong>Use nomes descritivos:</strong> <code>idadeUsuario</code> em vez de <code>x</code></li>
+                        <li><strong>Seja consistente:</strong> sempre camelCase para variáveis</li>
+                        <li><strong>Prefira tipos explícitos</strong> quando o contexto não for claro</li>
+                        <li><strong>Use <code>const</code></strong> para valores que nunca mudam</li>
+                    </ul>
+                </div>
+                
+                <div class="practice-avoid">
+                    <h3>❌ Evite Isso:</h3>
+                    <ul>
+                        <li><strong>Abreviações:</strong> <code>numeroTentativas</code> em vez de <code>numTent</code></li>
+                        <li><strong>Valores mágicos:</strong> use constantes nomeadas</li>
+                        <li><strong>Expressões complexas sem parênteses</strong></li>
+                        <li><strong>Comentários óbvios:</strong> <code>int x = 5; // define x como 5</code></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>8. Casos de Uso Reais</h2>
+            
+            <div class="real-cases">
+                <div class="case">
+                    <h3>1. Validação de Formulários Web</h3>
+                    <div class="code-block">
+                        <pre><code>bool validarIdade(int idade) {
+  return idade >= 0 && idade <= 120;
+}
+
+bool validarEmail(String email) {
+  return email.contains('@') && email.length > 5;
+}</code></pre>
+                    </div>
+                </div>
+                
+                <div class="case">
+                    <h3>2. Cálculos Financeiros em Apps</h3>
+                    <div class="code-block">
+                        <pre><code>double calcularDesconto(double valor, double percentual) {
+  return valor * (percentual / 100);
+}
+
+double calcularJurosSimples(double capital, double taxa, int tempo) {
+  return capital * (taxa / 100) * tempo;
+}</code></pre>
+                    </div>
+                </div>
+                
+                <div class="case">
+                    <h3>3. Formatação de Dados em Scripts CLI</h3>
+                    <div class="code-block">
+                        <pre><code>String formatarMoeda(double valor) {
+  return "R\$ ${valor.toStringAsFixed(2)}";
+}
+
+String formatarPorcentagem(double valor) {
+  return "${(valor * 100).toStringAsFixed(1)}%";
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>9. Exercícios Práticos</h2>
+            
+            <div class="exercises">
+                <div class="exercise">
+                    <h3>Exercício 1</h3>
+                    <p>Crie um programa que declare variáveis para nome, idade e salário de uma pessoa. Calcule e exiba:</p>
+                    <ul>
+                        <li>Salário anual</li>
+                        <li>Se a pessoa é maior de idade (>= 18)</li>
+                        <li>Uma apresentação formatada</li>
+                    </ul>
+                </div>
+                
+                <div class="exercise">
+                    <h3>Exercício 2</h3>
+                    <p>Implemente uma função que receba dois números e uma operação, retornando uma String com o resultado ou mensagem de erro apropriada.</p>
+                </div>
+                
+                <div class="exercise">
+                    <h3>Exercício 3</h3>
+                    <p>Crie um programa que calcule a área e perímetro de diferentes formas geométricas (retângulo, círculo, triângulo) usando constantes apropriadas.</p>
+                </div>
+                
+                <div class="exercise">
+                    <h3>Exercício 4</h3>
+                    <p>Desenvolva um programa que simule o cálculo de média escolar com 3 notas, exibindo a média e se o aluno foi aprovado (>= 7.0).</p>
+                </div>
+                
+                <div class="exercise">
+                    <h3>Exercício 5</h3>
+                    <p>Implemente um formatador de texto que receba uma string e retorne ela formatada com primeira letra maiúscula e o restante minúsculo.</p>
+                </div>
+            </div>
+            
+            <div class="toggle-solutions">
+                <button class="solution-toggle">Ver Gabarito dos Exercícios</button>
+            </div>
+            
+            <div class="solutions" style="display: none;">
+                <div class="solution">
+                    <h3>Resposta 1</h3>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  // Declaração das variáveis
+  String nome = "Carlos Silva";
+  int idade = 28;
+  double salario = 3500.50;
+  
+  // Cálculos
+  double salarioAnual = salario * 12;
+  bool maiorIdade = idade >= 18;
+  
+  // Apresentação formatada
+  print("=== Informações Pessoais ===");
+  print("Nome: $nome");
+  print("Idade: $idade anos");
+  print("Salário mensal: R\$ ${salario.toStringAsFixed(2)}");
+  print("Salário anual: R\$ ${salarioAnual.toStringAsFixed(2)}");
+  print("Maior de idade: ${maiorIdade ? 'Sim' : 'Não'}");
+  
+  // Bonus: informação adicional
+  String faixaEtaria = idade < 18 ? "Menor" : 
+                      idade < 60 ? "Adulto" : "Idoso";
+  print("Faixa etária: $faixaEtaria");
+}</code></pre>
+                    </div>
+                </div>
+                
+                <div class="solution">
+                    <h3>Resposta 2</h3>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  String calcularOperacao(double num1, double num2, String op) {
+    double resultado;
+    String operador;
+    
+    switch (op.toLowerCase()) {
+      case "+":
+        resultado = num1 + num2;
+        operador = "+";
+        break;
+      case "-":
+        resultado = num1 - num2;
+        operador = "-";
+        break;
+      case "*":
+        resultado = num1 * num2;
+        operador = "×";
+        break;
+      case "/":
+        if (num2 == 0) {
+          return "Erro: Divisão por zero";
+        }
+        resultado = num1 / num2;
+        operador = "÷";
+        break;
+      default:
+        return "Erro: Operação '$op' não suportada";
+    }
+    
+    return "$num1 $operador $num2 = ${resultado.toStringAsFixed(2)}";
+  }
+  
+  // Testes
+  print(calcularOperacao(10.5, 2.5, "+"));
+  print(calcularOperacao(15.0, 3.0, "/"));
+  print(calcularOperacao(8.0, 0.0, "/"));
+  print(calcularOperacao(7.0, 3.0, "%"));
+}</code></pre>
+                    </div>
+                </div>
+                
+                <div class="solution">
+                    <h3>Resposta 3</h3>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  const double pi = 3.14159;
+  
+  // Função para retângulo
+  void calcularRetangulo(double largura, double altura) {
+    double area = largura * altura;
+    double perimetro = 2 * (largura + altura);
+    
+    print("=== Retângulo ===");
+    print("Largura: ${largura}m");
+    print("Altura: ${altura}m");
+    print("Área: ${area}m²");
+    print("Perímetro: ${perimetro}m");
+  }
+  
+  // Função para círculo
+  void calcularCirculo(double raio) {
+    double area = pi * raio * raio;
+    double perimetro = 2 * pi * raio;
+    
+    print("\n=== Círculo ===");
+    print("Raio: ${raio}m");
+    print("Área: ${area.toStringAsFixed(2)}m²");
+    print("Perímetro: ${perimetro.toStringAsFixed(2)}m");
+  }
+  
+  // Função para triângulo
+  void calcularTriangulo(double base, double altura, double lado1, double lado2) {
+    double area = (base * altura) / 2;
+    double perimetro = base + lado1 + lado2;
+    
+    print("\n=== Triângulo ===");
+    print("Base: ${base}m");
+    print("Altura: ${altura}m");
+    print("Área: ${area}m²");
+    print("Perímetro: ${perimetro}m");
+  }
+  
+  // Testando as funções
+  calcularRetangulo(5.0, 3.0);
+  calcularCirculo(2.5);
+  calcularTriangulo(4.0, 3.0, 5.0, 5.0);
+}</code></pre>
+                    </div>
+                </div>
+                
+                <div class="solution">
+                    <h3>Resposta 4</h3>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  void calcularMediaEscolar(double nota1, double nota2, double nota3) {
+    // Calculando a média
+    double media = (nota1 + nota2 + nota3) / 3;
+    
+    // Verificando aprovação
+    bool aprovado = media >= 7.0;
+    String status = aprovado ? "Aprovado" : "Reprovado";
+    
+    // Classificação da média
+    String classificacao;
+    if (media >= 9.0) {
+      classificacao = "Excelente";
+    } else if (media >= 8.0) {
+      classificacao = "Ótimo";
+    } else if (media >= 7.0) {
+      classificacao = "Bom";
+    } else if (media >= 6.0) {
+      classificacao = "Regular";
+    } else {
+      classificacao = "Insuficiente";
+    }
+    
+    // Exibindo resultado
+    print("=== Boletim Escolar ===");
+    print("Nota 1: ${nota1.toStringAsFixed(1)}");
+    print("Nota 2: ${nota2.toStringAsFixed(1)}");
+    print("Nota 3: ${nota3.toStringAsFixed(1)}");
+    print("Média: ${media.toStringAsFixed(2)}");
+    print("Status: $status");
+    print("Classificação: $classificacao");
+  }
+  
+  // Testando diferentes casos
+  calcularMediaEscolar(8.5, 7.0, 9.2);
+  print("");
+  calcularMediaEscolar(5.5, 6.0, 6.8);
+}</code></pre>
+                    </div>
+                </div>
+                
+                <div class="solution">
+                    <h3>Resposta 5</h3>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  String formatarTexto(String texto) {
+    // Verificar se o texto não está vazio
+    if (texto.isEmpty) {
+      return "";
+    }
+    
+    // Converter para minúsculas
+    String textoMinusculo = texto.toLowerCase();
+    
+    // Primeira letra maiúscula + resto minúsculo
+    String textoFormatado = textoMinusculo[0].toUpperCase() + 
+                           textoMinusculo.substring(1);
+    
+    return textoFormatado;
+  }
+  
+  // Função mais avançada que formata nomes próprios
+  String formatarNomeProprio(String nomeCompleto) {
+    if (nomeCompleto.isEmpty) {
+      return "";
+    }
+    
+    List<String> palavras = nomeCompleto.trim().split(' ');
+    List<String> palavrasFormatadas = [];
+    
+    for (String palavra in palavras) {
+      if (palavra.isNotEmpty) {
+        // Palavras pequenas (preposições) ficam minúsculas, exceto a primeira
+        if (palavra.length <= 2 && palavrasFormatadas.isNotEmpty) {
+          palavrasFormatadas.add(palavra.toLowerCase());
+        } else {
+          palavrasFormatadas.add(formatarTexto(palavra));
+        }
+      }
+    }
+    
+    return palavrasFormatadas.join(' ');
+  }
+  
+  // Testes
+  print("=== Formatador de Texto ===");
+  print("'${formatarTexto("JOÃO")}'");
+  print("'${formatarTexto("maria")}'");
+  print("'${formatarTexto("pedro SILVA")}'");
+  print("'${formatarTexto("")}'");
+  
+  print("\n=== Formatador de Nome Próprio ===");
+  print("'${formatarNomeProprio("JOÃO DA SILVA")}'");
+  print("'${formatarNomeProprio("maria de souza santos")}'");
+  print("'${formatarNomeProprio("PEDRO DE OLIVEIRA")}'");
+  print("'${formatarNomeProprio("ana")}'");
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Resumo</h2>
+            <div class="summary-points">
+                <ol>
+                    <li><strong>Variáveis</strong> são declaradas com tipo explícito (<code>int x = 5</code>) ou <code>var</code> para inferência automática</li>
+                    <li><strong>Tipos primitivos</strong> fundamentais: <code>int</code>, <code>double</code>, <code>String</code>, <code>bool</code></li>
+                    <li><strong>Operadores aritméticos</strong> básicos: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>~/</code>, <code>%</code></li>
+                    <li><strong>Operadores de comparação</strong>: <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></li>
+                    <li><strong>Operadores lógicos</strong>: <code>&amp;&amp;</code> (E), <code>||</code> (OU), <code>!</code> (NÃO)</li>
+                    <li><strong>Comentários</strong> de linha (<code>//</code>), bloco (<code>/* */</code>) e documentação (<code>///</code>)</li>
+                    <li><strong>Convenções de nomenclatura</strong>: camelCase para variáveis, PascalCase para classes</li>
+                    <li><strong>String interpolation</strong> com <code>$variavel</code> ou <code>${expressao}</code></li>
+                    <li><strong>Constantes</strong> usar <code>const</code> para tempo de compilação e <code>final</code> para tempo de execução</li>
+                    <li><strong>Validações</strong> são essenciais para código robusto em produção</li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Glossário</h2>
+            <div class="glossary">
+                <div class="glossary-item">
+                    <strong>Variável:</strong> Espaço na memória que armazena um valor com um nome identificador
+                </div>
+                <div class="glossary-item">
+                    <strong>Tipo primitivo:</strong> Tipo básico de dado fornecido pela linguagem (int, double, String, bool)
+                </div>
+                <div class="glossary-item">
+                    <strong>Inferência de tipo:</strong> Capacidade do Dart de determinar automaticamente o tipo de uma variável
+                </div>
+                <div class="glossary-item">
+                    <strong>Interpolação:</strong> Inserção de valores de variáveis dentro de strings usando <code>$</code>
+                </div>
+                <div class="glossary-item">
+                    <strong>camelCase:</strong> Convenção onde primeira palavra é minúscula e demais iniciam maiúsculas
+                </div>
+                <div class="glossary-item">
+                    <strong>PascalCase:</strong> Convenção onde todas as palavras iniciam com maiúscula
+                </div>
+                <div class="glossary-item">
+                    <strong>Operador ternário:</strong> Expressão condicional na forma <code>condição ? valorSeVerdadeiro : valorSeFalso</code>
+                </div>
+                <div class="glossary-item">
+                    <strong>Constante:</strong> Valor que não muda durante a execução do programa
+                </div>
+                <div class="glossary-item">
+                    <strong>Expressão:</strong> Combinação de valores, variáveis e operadores que produz um resultado
+                </div>
+                <div class="glossary-item">
+                    <strong>Concatenação:</strong> Junção de strings usando o operador <code>+</code>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Referências</h2>
+            <div class="references">
+                <ol>
+                    <li><a href="https://dart.dev/language/variables" target="_blank">Dart Language Tour - Variables</a></li>
+                    <li><a href="https://dart.dev/language/built-in-types" target="_blank">Dart Language Tour - Built-in Types</a></li>
+                    <li><a href="https://dart.dev/language/operators" target="_blank">Dart Language Tour - Operators</a></li>
+                    <li><a href="https://dart.dev/effective-dart/style" target="_blank">Dart Style Guide</a></li>
+                    <li><a href="https://dartpad.dev" target="_blank">DartPad - Ambiente Online</a></li>
+                </ol>
+            </div>
+            
+            <div class="study-tip">
+                <p><strong>Dica de estudo:</strong> Agora você domina os fundamentos de variáveis, tipos primitivos e operadores em Dart. Estes conceitos são a base para tudo que construiremos adiante. Pratique bastante no DartPad modificando os exemplos. A experimentação é fundamental para fixar o aprendizado.</p>
+            </div>
+        </section>
+
+        <div class="chapter-nav">
+            <button class="nav-button"><i class="fas fa-arrow-left"></i> Anterior</button>
+            <button class="nav-button next-button">Próximo <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+    <script src="assets/js/script.js" type="module"></script>
+</body>
+</html>
