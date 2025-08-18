@@ -1,11 +1,9 @@
-// Adicione estes métodos à classe DartGuideApp no arquivo assets/js/script.js
-
 class DartGuideApp {
     constructor() {
         this.chapters = [
             { id: 1, title: "Introdução ao Dart", icon: "play-circle", file: "1-introducao.html" },
-            { id: 2, title: "Fundamentos e Sintaxe", icon: "code", file: "2-fundamentos.html"},
-            { id: 3, title: "Controle de Fluxo", icon: "random" },
+            { id: 2, title: "Fundamentos e Sintaxe", icon: "code", file: "2-fundamentos.html" },
+            { id: 3, title: "Controle de Fluxo", icon: "random", "3-controle.html" },
             { id: 4, title: "Funções", icon: "function" },
             { id: 5, title: "Coleções", icon: "list" },
             { id: 6, title: "Orientação a Objetos", icon: "object-group" },
@@ -72,8 +70,7 @@ class DartGuideApp {
             item.classList.toggle('active', item.dataset.chapter === chapterId);
         });
     }
-
-    // Novo método para inicializar recursos específicos dos capítulos
+    
     initChapterFeatures() {
         this.initDartPads();
         this.initTabs();
@@ -92,14 +89,11 @@ class DartGuideApp {
                 }
             });
         });
-    }
-
-    // Novo método para executar código Dart (simulação)
+    }   
     executeDartCode(code) {
-        // Aqui você pode integrar com o DartPad real ou mostrar uma simulação
-        console.log('Executando código Dart:', code);
         
-        // Simulação de execução para demonstração
+        console.log('Executando código Dart:', code);        
+        
         const modal = document.createElement('div');
         modal.className = 'execution-modal';
         modal.innerHTML = `
@@ -116,9 +110,8 @@ class DartGuideApp {
             </div>
         `;
         
-        document.body.appendChild(modal);
+        document.body.appendChild(modal);        
         
-        // Fechar modal
         modal.querySelector('.close-modal').addEventListener('click', () => {
             document.body.removeChild(modal);
         });
@@ -129,25 +122,21 @@ class DartGuideApp {
             }
         });
     }
-
-    // Novo método para gerenciar abas de instalação
+    
     initTabs() {
         document.querySelectorAll('.tab-header').forEach(header => {
             header.addEventListener('click', () => {
-                const tabName = header.dataset.tab;
+                const tabName = header.dataset.tab;                
                 
-                // Remove active de todas as abas
                 document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));                
                 
-                // Ativa a aba clicada
                 header.classList.add('active');
                 document.querySelector(`[data-tab="${tabName}"].tab-content`).classList.add('active');
             });
         });
     }
-
-    // Novo método para toggle de soluções
+    
     initSolutionToggle() {
         const toggleButton = document.querySelector('.solution-toggle');
         const solutionsDiv = document.querySelector('.solutions');
@@ -160,8 +149,7 @@ class DartGuideApp {
             });
         }
     }
-
-    // Novo método para botões de copiar código
+    
     initCopyButtons() {
         document.querySelectorAll('.copy-button').forEach(button => {
             button.addEventListener('click', async () => {
@@ -170,9 +158,8 @@ class DartGuideApp {
                     const code = codeBlock.textContent;
                     
                     try {
-                        await navigator.clipboard.writeText(code);
+                        await navigator.clipboard.writeText(code);                        
                         
-                        // Feedback visual
                         const originalText = button.innerHTML;
                         button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
                         button.style.background = 'rgba(52, 168, 83, 0.3)';
@@ -183,9 +170,8 @@ class DartGuideApp {
                         }, 2000);
                         
                     } catch (err) {
-                        console.error('Erro ao copiar código:', err);
+                        console.error('Erro ao copiar código:', err);                        
                         
-                        // Fallback para browsers mais antigos
                         const textArea = document.createElement('textarea');
                         textArea.value = code;
                         document.body.appendChild(textArea);
@@ -202,15 +188,13 @@ class DartGuideApp {
             });
         });
     }
-
-    // Novo método para navegação entre capítulos
+    
     initNavigation() {
         const nextButton = document.querySelector('.next-button');
         const prevButton = document.querySelector('.nav-button:not(.next-button)');
         
         if (nextButton) {
-            nextButton.addEventListener('click', () => {
-                // Implementar navegação para próximo capítulo
+            nextButton.addEventListener('click', () => {                
                 const currentChapter = parseInt(document.querySelector('.chapter-item.active').dataset.chapter);
                 const nextChapter = currentChapter + 1;
                 
@@ -221,8 +205,7 @@ class DartGuideApp {
         }
         
         if (prevButton && !prevButton.classList.contains('disabled')) {
-            prevButton.addEventListener('click', () => {
-                // Implementar navegação para capítulo anterior
+            prevButton.addEventListener('click', () => {                
                 const currentChapter = parseInt(document.querySelector('.chapter-item.active').dataset.chapter);
                 const prevChapter = currentChapter - 1;
                 
@@ -234,7 +217,6 @@ class DartGuideApp {
     }
 }
 
-// Adicionar estilos CSS para o modal via JavaScript
 const modalStyles = `
 <style>
 .execution-modal {
@@ -311,7 +293,6 @@ const modalStyles = `
 </style>
 `;
 
-// Adicionar os estilos ao head quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
     document.head.insertAdjacentHTML('beforeend', modalStyles);
     new DartGuideApp();
