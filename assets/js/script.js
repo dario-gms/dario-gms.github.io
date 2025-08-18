@@ -1,17 +1,31 @@
-// Sistema de roteamento e carregamento de conteúdo
 class DartGuideApp {
     constructor() {
-        this.currentChapter = null;
+        this.chapters = [
+            { id: 1, title: "Introdução ao Dart", icon: "play-circle" },
+            { id: 2, title: "Fundamentos e Sintaxe", icon: "code" },
+            { id: 3, title: "Controle de Fluxo", icon: "random" },
+            { id: 4, title: "Funções", icon: "function" },
+            { id: 5, title: "Coleções", icon: "list" },
+            { id: 6, title: "Orientação a Objetos", icon: "object-group" },
+            { id: 7, title: "Null Safety", icon: "exclamation-circle" },
+            { id: 8, title: "Exceções", icon: "bug" },
+            { id: 9, title: "Programação Assíncrona", icon: "bolt" },
+            { id: 10, title: "Pacotes", icon: "box" },
+            { id: 11, title: "Testes", icon: "vial" },
+            { id: 12, title: "Boas Práticas", icon: "thumbs-up" },
+            { id: 13, title: "Projetos Práticos", icon: "laptop-code" },
+            { id: 14, title: "Próximos Passos", icon: "flag-checkered" }
+        ];
         this.init();
     }
 
     async init() {
-        await this.loadSidebar();
+        this.loadSidebar();
         this.setupEventListeners();
-        this.loadInitialContent();
+        this.loadChapter(1);
     }
 
-    async loadSidebar() {
+    loadSidebar() {
         const sidebar = document.getElementById('sidebar');
         sidebar.innerHTML = `
             <div class="logo">
@@ -19,68 +33,51 @@ class DartGuideApp {
                 <h1>Guia de Dart</h1>
             </div>
             <div class="chapters">
-                ${this.generateChapterLinks()}
+                ${this.chapters.map(chapter => `
+                    <div class="chapter-item" data-chapter="${chapter.id}">
+                        <i class="fas fa-${chapter.icon}"></i>
+                        <span>${chapter.id}. ${chapter.title}</span>
+                    </div>
+                `).join('')}
             </div>
         `;
     }
 
-    generateChapterLinks() {
-        const chapters = [
-            { id: 1, title: "Introdução ao Dart", icon: "play-circle" },
-            { id: 2, title: "Fundamentos e Sintaxe", icon: "code" },
-            // Adicione todos os capítulos aqui
-            { id: 14, title: "Próximos Passos", icon: "flag-checkered" }
-        ];
-
-        return chapters.map(chapter => `
-            <div class="chapter-item" data-chapter="${chapter.id}">
-                <i class="fas fa-${chapter.icon}"></i>
-                <span>${chapter.id}. ${chapter.title}</span>
-            </div>
-        `).join('');
-    }
-
     setupEventListeners() {
-        document.querySelectorAll('.chapter-item').forEach(item => {
-            item.addEventListener('click', () => this.loadChapter(item.dataset.chapter));
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.chapter-item')) {
+                const chapterId = e.target.closest('.chapter-item').dataset.chapter;
+                this.loadChapter(chapterId);
+            }
         });
     }
 
     async loadChapter(chapterId) {
-        this.currentChapter = chapterId;
-        const response = await fetch(`chapters/${chapterId}-introducao.html`);
-        const content = await response.text();
-        
-        document.getElementById('content-container').innerHTML = content;
-        this.setActiveChapter();
-        this.initDartPads();
+        try {
+            const response = await fetch(`chapters/${chapterId}-introducao.html`);
+            const content = await response.text();
+            document.getElementById('content-container').innerHTML = content;
+            this.setActiveChapter(chapterId);
+            this.initDartPads();
+        } catch (error) {
+            console.error('Erro ao carregar capítulo:', error);
+        }
     }
 
-    setActiveChapter() {
+    setActiveChapter(chapterId) {
         document.querySelectorAll('.chapter-item').forEach(item => {
-            item.classList.toggle('active', item.dataset.chapter === this.currentChapter);
+            item.classList.toggle('active', item.dataset.chapter === chapterId);
         });
     }
 
     initDartPads() {
-        // Inicializa todos os DartPads na página
-        document.querySelectorAll('.dartpad-container').forEach(container => {
-            const runButton = container.querySelector('.run-button');
-            const iframe = container.querySelector('iframe.dartpad');
-            
-            runButton.addEventListener('click', () => {
+        document.querySelectorAll('.run-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const iframe = button.closest('.dartpad-container').querySelector('iframe');
                 iframe.contentWindow.postMessage('run', '*');
             });
         });
     }
-
-    loadInitialContent() {
-        // Carrega o primeiro capítulo por padrão
-        this.loadChapter('1');
-    }
 }
 
-// Inicia a aplicação quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', () => {
-    new DartGuideApp();
-});
+document.addEventListener('DOMContentLoaded', () => new DartGuideApp());
