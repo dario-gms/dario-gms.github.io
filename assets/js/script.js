@@ -540,6 +540,116 @@ class DartSyntaxHighlighter {
             'int', 'double', 'String', 'bool', 'List', 'Map', 'Set', 'dynamic', 'Object',
             'main', 'print', 'late'
         ];
+    }
+
+    highlightAll() {
+        document.querySelectorAll('.code-block pre code').forEach(codeBlock => {
+            // Só aplica highlight se ainda não foi aplicado
+            if (!codeBlock.querySelector('.keyword, .string, .number, .comment, .function')) {
+                this.highlight(codeBlock);
+            }
+        });
+    }
+
+    highlight(codeElement) {
+        // Pega o texto original do código
+        let code = codeElement.textContent || codeElement.innerText;
+        
+        // Arrays para armazenar elementos protegidos
+        const protectedElements = [];
+        let protectedIndex = 0;
+
+        // Função para proteger um elemento
+        const protect = (match) => {
+            const placeholder = `__PROTECTED_${protectedIndex}__`;
+            protectedElements[protectedIndex] = match;
+            protectedIndex++;
+            return placeholder;
+        };
+
+        // Função para restaurar elementos protegidos
+        const restore = (text) => {
+            for (let i = 0; i < protectedElements.length; i++) {
+                text = text.replace(`__PROTECTED_${i}__`, protectedElements[i]);
+            }
+            return text;
+        };
+
+        // 1. Proteger strings (aspas simples, duplas e template strings)
+        code = code.replace(/(["'`])(?:(?!\1)[^\\]|\\.)*(?\1)/g, (match) => {
+            return protect(`<span class="string">${this.escapeHtml(match)}</span>`);
+        });
+
+        // 2. Proteger comentários
+        code = code.replace(/\/\/.*$/gm, (match) => {
+            return protect(`<span class="comment">${this.escapeHtml(match)}</span>`);
+        });
+
+        code = code.replace(/\/\*[\s\S]*?\*\//g, (match) => {
+            return protect(`<span class="comment">${this.escapeHtml(match)}</span>`);
+        });
+
+        // 3. Destacar números (inteiros e decimais)
+        code = code.replace(/\b\d+\.?\d*\b/g, (match) => {
+            return `<span class="number">${match}</span>`;
+        });
+
+        // 4. Destacar palavras-chave
+        this.keywords.forEach(keyword => {
+            const regex = new RegExp(`\\b${this.escapeRegex(keyword)}\\b`, 'g');
+            code = code.replace(regex, `<span class="keyword">${keyword}</span>`);
+        });
+
+        // 5. Destacar funções (palavras seguidas de parênteses, mas não dentro de spans)
+        code = code.replace(/(?<!<[^>]*)\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=\()/g, (match, funcName) => {
+            // Verifica se não está dentro de uma tag HTML
+            return `<span class="function">${funcName}</span>(`;
+        });
+
+        // 6. Destacar classes (PascalCase)
+        code = code.replace(/(?<!<[^>]*)\b([A-Z][a-zA-Z0-9_]*)\b(?![^<]*>)/g, (match, className) => {
+            // Evita destacar se já está dentro de uma tag span
+            if (this.keywords.includes(className.toLowerCase())) {
+                return match; // Se for uma palavra-chave, não destaque como classe
+            }
+            return `<span class="class">${className}</span>`;
+        });
+
+        // 7. Destacar operadores simples (evitando conflitos)
+        const simpleOperators = ['==', '!=', '<=', '>=', '&&', '||', '++', '--', '+=', '-=', '*=', '/='];
+        simpleOperators.forEach(op => {
+            const escapedOp = this.escapeRegex(op);
+            const regex = new RegExp(`(?<!<[^>]*)${escapedOp}(?![^<]*>)`, 'g');
+            code = code.replace(regex, `<span class="operator">${op}</span>`);
+        });
+
+        // Restaurar elementos protegidos
+        code = restore(code);
+
+        // Aplicar o código destacado
+        codeElement.innerHTML = code;
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    escapeRegex(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\// Syntax Highlighter for Dart
+class DartSyntaxHighlighter {
+    constructor() {
+        this.keywords = [
+            'abstract', 'as', 'assert', 'async', 'await', 'break', 'case', 'catch', 
+            'class', 'const', 'continue', 'default', 'do', 'else', 'enum', 'extends', 
+            'external', 'factory', 'false', 'final', 'finally', 'for', 'get', 'if', 
+            'implements', 'import', 'in', 'is', 'library', 'new', 'null', 'operator', 
+            'part', 'required', 'rethrow', 'return', 'set', 'static', 'super', 'switch', 
+            'this', 'throw', 'true', 'try', 'typedef', 'var', 'void', 'while', 'with',
+            'int', 'double', 'String', 'bool', 'List', 'Map', 'Set', 'dynamic', 'Object',
+            'main', 'print', 'late'
+        ];
 
         this.operators = [
             '+', '-', '*', '/', '%', '~/', '++', '--', '==', '!=', '>', '<', 
@@ -610,6 +720,8 @@ class DartSyntaxHighlighter {
         });
 
         codeElement.innerHTML = code;
+    }
+}');
     }
 }
 
