@@ -19,10 +19,30 @@ class DartGuideApp {
         this.init();
     }
 
-    async init() {
+    async init() {        
+        await this.loadPrism();
         this.loadSidebar();
         this.setupEventListeners();
         this.loadChapter(1);
+    }
+
+    async loadPrism() {        
+        const prismCSS = document.createElement('link');
+        prismCSS.rel = 'stylesheet';
+        prismCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css';
+        document.head.appendChild(prismCSS);
+        
+        return new Promise((resolve) => {
+            const prismJS = document.createElement('script');
+            prismJS.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js';
+            prismJS.onload = () => {                
+                const prismDart = document.createElement('script');
+                prismDart.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js';
+                prismDart.onload = resolve;
+                document.head.appendChild(prismDart);
+            };
+            document.head.appendChild(prismJS);
+        });
     }
 
     loadSidebar() {
@@ -59,10 +79,37 @@ class DartGuideApp {
             const content = await response.text();
             document.getElementById('content-container').innerHTML = content;
             this.setActiveChapter(chapterId);
-            this.initChapterFeatures();
+            this.initChapterFeatures();            
+            this.applySyntaxHighlighting();
         } catch (error) {
             console.error('Erro ao carregar capítulo:', error);
         }
+    }
+
+    applySyntaxHighlighting() {       
+        const codeBlocks = document.querySelectorAll('pre code');
+        
+        codeBlocks.forEach(block => {            
+            block.classList.add('language-dart');            
+            
+            const code = block.textContent;
+            block.innerHTML = this.escapeHtml(code);
+        });
+        
+        if (window.Prism) {
+            window.Prism.highlightAll();
+        }
+    }
+
+    escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
     setActiveChapter(chapterId) {
@@ -90,8 +137,8 @@ class DartGuideApp {
             });
         });
     }   
+    
     executeDartCode(code) {
-        
         console.log('Executando código Dart:', code);        
         
         const modal = document.createElement('div');
@@ -104,13 +151,17 @@ class DartGuideApp {
                 </div>
                 <div class="modal-body">
                     <p>Código a ser executado no DartPad:</p>
-                    <pre><code>${code}</code></pre>
+                    <pre><code class="language-dart">${this.escapeHtml(code)}</code></pre>
                     <p><strong>Dica:</strong> Copie este código e cole no <a href="https://dartpad.dev" target="_blank">DartPad</a> para executar!</p>
                 </div>
             </div>
         `;
         
         document.body.appendChild(modal);        
+       
+        if (window.Prism) {
+            window.Prism.highlightAllUnder(modal);
+        }
         
         modal.querySelector('.close-modal').addEventListener('click', () => {
             document.body.removeChild(modal);
@@ -145,7 +196,11 @@ class DartGuideApp {
             toggleButton.addEventListener('click', () => {
                 const isVisible = solutionsDiv.style.display !== 'none';
                 solutionsDiv.style.display = isVisible ? 'none' : 'block';
-                toggleButton.textContent = isVisible ? 'Ver Gabarito dos Exercícios' : 'Ocultar Gabarito';
+                toggleButton.textContent = isVisible ? 'Ver Gabarito dos Exercícios' : 'Ocultar Gabarito';                
+               
+                if (!isVisible) {
+                    setTimeout(() => this.applySyntaxHighlighting(), 100);
+                }
             });
         }
     }
@@ -289,6 +344,42 @@ const modalStyles = `
 .modal-body code {
     font-family: 'Courier New', monospace;
     color: var(--dark);
+}
+
+/* Ajustes para o Prism.js */
+.token.keyword {
+    color: #569cd6 !important;
+}
+
+.token.string {
+    color: #ce9178 !important;
+}
+
+.token.number {
+    color: #b5cea8 !important;
+}
+
+.token.function {
+    color: #dcdcaa !important;
+}
+
+.token.comment {
+    color: #6a9955 !important;
+}
+
+.token.operator {
+    color: #d4d4d4 !important;
+}
+
+pre[class*="language-"] {
+    background: #2d3748 !important;
+    border: 1px solid #4a5568 !important;
+    border-radius: 8px !important;
+}
+
+code[class*="language-"] {
+    color: #e2e8f0 !important;
+    font-family: 'Courier New', monospace !important;
 }
 </style>
 `;
