@@ -19,30 +19,35 @@ class DartGuideApp {
         this.init();
     }
 
-    async init() {        
-        await this.loadPrism();
+    async init() {
         this.loadSidebar();
         this.setupEventListeners();
         this.loadChapter(1);
+        // Carrega Prism.js em paralelo, sem bloquear a inicialização
+        this.loadPrism();
     }
 
-    async loadPrism() {        
-        return new Promise((resolve) => {
+    async loadPrism() {
+        try {
+            // Carrega JavaScript do Prism primeiro
             const prismJS = document.createElement('script');
             prismJS.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js';
-            prismJS.onload = () => {                
+            prismJS.onload = () => {
+                // Carrega componente Dart
                 const prismDart = document.createElement('script');
                 prismDart.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js';
-                prismDart.onload = () => {                    
+                prismDart.onload = () => {
+                    // Carrega componente adicional para melhor suporte
                     const prismClike = document.createElement('script');
                     prismClike.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js';
-                    prismClike.onload = resolve;
                     document.head.appendChild(prismClike);
                 };
                 document.head.appendChild(prismDart);
             };
             document.head.appendChild(prismJS);
-        });
+        } catch (error) {
+            console.log('Prism não carregou, usando highlighting manual');
+        }
     }
 
     loadSidebar() {
@@ -79,27 +84,34 @@ class DartGuideApp {
             const content = await response.text();
             document.getElementById('content-container').innerHTML = content;
             this.setActiveChapter(chapterId);
-            this.initChapterFeatures();            
+            this.initChapterFeatures();
+            // Aplica syntax highlighting após carregar o conteúdo
             this.applySyntaxHighlighting();
         } catch (error) {
             console.error('Erro ao carregar capítulo:', error);
         }
     }
 
-    applySyntaxHighlighting() {        
+    applySyntaxHighlighting() {
+        // Encontra todos os blocos de código e adiciona classes do Prism
         const codeBlocks = document.querySelectorAll('pre code');
         
-        codeBlocks.forEach(block => {            
-            block.classList.remove('language-dart');            
-           
+        codeBlocks.forEach(block => {
+            // Remove qualquer highlighting anterior
+            block.classList.remove('language-dart');
+            
+            // Adiciona classes necessárias para o Prism
             block.classList.add('language-dart');
-            block.parentElement.classList.add('language-dart');            
+            block.parentElement.classList.add('language-dart');
             
-            const code = block.textContent;            
+            // Preserva o código original
+            const code = block.textContent;
             
+            // Aplica o highlighting manualmente para garantir que funcione
             block.innerHTML = this.manualDartHighlight(code);
         });
-        
+
+        // Executa o Prism para fazer o highlighting se estiver carregado
         if (window.Prism && window.Prism.highlight) {
             setTimeout(() => {
                 codeBlocks.forEach(block => {
@@ -107,7 +119,8 @@ class DartGuideApp {
                     try {
                         const highlighted = window.Prism.highlight(code, window.Prism.languages.dart, 'dart');
                         block.innerHTML = highlighted;
-                    } catch (e) {                        
+                    } catch (e) {
+                        // Fallback para highlighting manual
                         block.innerHTML = this.manualDartHighlight(code);
                     }
                 });
@@ -115,47 +128,59 @@ class DartGuideApp {
         }
     }
 
-    manualDartHighlight(code) {        
-        let highlighted = this.escapeHtml(code);       
+    manualDartHighlight(code) {
+        // Escapa HTML primeiro
+        let highlighted = this.escapeHtml(code);
         
+        // Keywords do Dart
         const keywords = ['void', 'main', 'String', 'int', 'double', 'bool', 'List', 'Map', 'var', 'final', 'const', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'return', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'implements', 'abstract', 'static', 'import', 'library', 'part', 'export', 'dynamic', 'null', 'true', 'false'];
         
+        // Functions
+        const functions = ['print', 'length', 'add', 'remove', 'contains', 'toString', 'toStringAsFixed', 'keys', 'values', 'reduce'];
         
-        const functions = ['print', 'length', 'add', 'remove', 'contains', 'toString', 'toStringAsFixed', 'keys', 'values', 'reduce'];        
-        
+        // Aplica highlighting para keywords
         keywords.forEach(keyword => {
             const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
             highlighted = highlighted.replace(regex, `<span class="token keyword">$1</span>`);
-        });        
+        });
         
+        // Aplica highlighting para functions
         functions.forEach(func => {
             const regex = new RegExp(`\\b(${func})(?=\\s*\\()`, 'g');
             highlighted = highlighted.replace(regex, `<span class="token function">$1</span>`);
-        });        
+        });
         
+        // Strings
         highlighted = highlighted.replace(/'([^']*?)'/g, '<span class="token string">\'$1\'</span>');
-        highlighted = highlighted.replace(/"([^"]*?)"/g, '<span class="token string">"$1"</span>');        
+        highlighted = highlighted.replace(/"([^"]*?)"/g, '<span class="token string">"$1"</span>');
         
-        highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="token number">$1</span>');        
+        // Numbers
+        highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="token number">$1</span>');
         
+        // Comments
         highlighted = highlighted.replace(/\/\/.*$/gm, '<span class="token comment">    applySyntaxHighlighting() {
-       
+        // Encontra todos os blocos de código e adiciona classes do Prism
         const codeBlocks = document.querySelectorAll('pre code');
         
-        codeBlocks.forEach(block => {            
-            block.classList.add('language-dart');            
+        codeBlocks.forEach(block => {
+            // Adiciona classes necessárias para o Prism
+            block.classList.add('language-dart');
             
+            // Escapa caracteres HTML se necessário
             const code = block.textContent;
             block.innerHTML = this.escapeHtml(code);
         });
-        
+
+        // Executa o Prism para fazer o highlighting
         if (window.Prism) {
             window.Prism.highlightAll();
         }
-    }</span>');        
+    }</span>');
         
-        highlighted = highlighted.replace(/([+\-*\/=<>!&|%])/g, '<span class="token operator">$1</span>');        
+        // Operators
+        highlighted = highlighted.replace(/([+\-*\/=<>!&|%])/g, '<span class="token operator">$1</span>');
         
+        // Punctuation
         highlighted = highlighted.replace(/([{}()\[\];,.])/g, '<span class="token punctuation">$1</span>');
         
         return highlighted;
@@ -217,8 +242,9 @@ class DartGuideApp {
             </div>
         `;
         
-        document.body.appendChild(modal);        
+        document.body.appendChild(modal);
         
+        // Aplica syntax highlighting no modal
         if (window.Prism) {
             window.Prism.highlightAllUnder(modal);
         }
@@ -256,8 +282,9 @@ class DartGuideApp {
             toggleButton.addEventListener('click', () => {
                 const isVisible = solutionsDiv.style.display !== 'none';
                 solutionsDiv.style.display = isVisible ? 'none' : 'block';
-                toggleButton.textContent = isVisible ? 'Ver Gabarito dos Exercícios' : 'Ocultar Gabarito';                
-               
+                toggleButton.textContent = isVisible ? 'Ver Gabarito dos Exercícios' : 'Ocultar Gabarito';
+                
+                // Reaplica syntax highlighting se necessário
                 if (!isVisible) {
                     setTimeout(() => this.applySyntaxHighlighting(), 100);
                 }
@@ -406,6 +433,7 @@ const modalStyles = `
     color: var(--dark);
 }
 
+/* Ajustes para o Prism.js */
 pre[class*="language-"],
 pre code {
     background: #2d3748 !important;
@@ -422,6 +450,7 @@ code[class*="language-"] {
     font-family: 'Courier New', monospace !important;
 }
 
+/* Cores específicas para tokens */
 .token.keyword {
     color: #569cd6 !important;
     font-weight: bold !important;
