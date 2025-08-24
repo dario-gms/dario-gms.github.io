@@ -19,38 +19,14 @@ class DartGuideApp {
         this.init();
     }
 
-    init() {
+    async init() {
         this.loadSidebar();
         this.setupEventListeners();
         this.loadChapter(1);
-        // Carrega highlighting depois que tudo estiver funcionando
-        setTimeout(() => this.setupSyntaxHighlighting(), 1000);
-    }
-
-    setupSyntaxHighlighting() {
-        // Aplica syntax highlighting manual imediatamente
-        this.applySyntaxHighlighting();
-    }
-
-    loadPrismOptional() {
-        try {
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js';
-            script.onload = () => {
-                // Re-aplica highlighting com Prism se carregar
-                setTimeout(() => this.applySyntaxHighlighting(), 200);
-            };
-            document.head.appendChild(script);
-        } catch (e) {
-            // Continua usando highlighting manual se Prism falhar
-            console.log('Usando highlighting manual');
-        }
     }
 
     loadSidebar() {
         const sidebar = document.getElementById('sidebar');
-        if (!sidebar) return;
-        
         sidebar.innerHTML = `
             <div class="logo">
                 <i class="fas fa-code"></i>
@@ -79,137 +55,14 @@ class DartGuideApp {
     async loadChapter(chapterId) {
         try {
             const chapter = this.chapters.find(c => c.id == chapterId);
-            if (!chapter || !chapter.file) {
-                console.log('Capítulo ainda não disponível');
-                return;
-            }
-            
             const response = await fetch(`chapters/${chapter.file}`);
-            if (!response.ok) {
-                console.error('Erro ao carregar capítulo');
-                return;
-            }
-            
             const content = await response.text();
-            const contentContainer = document.getElementById('content-container');
-            if (contentContainer) {
-                contentContainer.innerHTML = content;
-                this.setActiveChapter(chapterId);
-                this.initChapterFeatures();
-                // Aplica highlighting no novo conteúdo
-                setTimeout(() => this.applySyntaxHighlighting(), 100);
-            }
+            document.getElementById('content-container').innerHTML = content;
+            this.setActiveChapter(chapterId);
+            this.initChapterFeatures();
         } catch (error) {
             console.error('Erro ao carregar capítulo:', error);
         }
-    }
-
-    applySyntaxHighlighting() {
-        const codeBlocks = document.querySelectorAll('pre code');
-        
-        codeBlocks.forEach(block => {
-            // Pula se já foi processado
-            if (block.classList.contains('highlighted')) return;
-            
-            // Pega o texto original (sem HTML)
-            const code = block.textContent || block.innerText;
-            
-            // Limpa qualquer HTML anterior
-            block.innerHTML = '';
-            
-            // Aplica o highlighting
-            block.innerHTML = this.highlightDartCode(code);
-            block.classList.add('highlighted');
-        });
-    }
-
-    highlightDartCode(code) {
-        // Remove qualquer escape HTML para trabalhar com texto puro
-        let highlighted = code
-            .replace(/&amp;/g, '&')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&quot;/g, '"')
-            .replace(/&#039;/g, "'");
-        
-        // Escapa HTML novamente
-        highlighted = this.escapeHtml(highlighted);
-        
-        // Aplica highlighting em ordem específica para evitar conflitos
-        
-        // 1. Comentários primeiro (para não serem afetados pelo resto)
-        highlighted = highlighted.replace(/\/\/.*$/gm, '<span class="hl-comment">    highlightDartCode(code) {
-        let highlighted = this.escapeHtml(code);
-        
-        // Keywords
-        const keywords = ['void', 'main', 'String', 'int', 'double', 'bool', 'List', 'Map', 'var', 'final', 'const', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'return', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'implements', 'abstract', 'static', 'import', 'library', 'part', 'export', 'dynamic', 'null', 'true', 'false'];
-        
-        keywords.forEach(keyword => {
-            const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
-            highlighted = highlighted.replace(regex, `<span class="hl-keyword">$1</span>`);
-        });
-        
-        // Functions
-        const functions = ['print', 'length', 'add', 'remove', 'contains', 'toString', 'toStringAsFixed', 'keys', 'values', 'reduce'];
-        functions.forEach(func => {
-            const regex = new RegExp(`\\b(${func})(?=\\s*\\()`, 'g');
-            highlighted = highlighted.replace(regex, `<span class="hl-function">$1</span>`);
-        });
-        
-        // Strings
-        highlighted = highlighted.replace(/'([^']*?)'/g, '<span class="hl-string">\'$1\'</span>');
-        highlighted = highlighted.replace(/"([^"]*?)"/g, '<span class="hl-string">"$1"</span>');
-        
-        // Numbers
-        highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="hl-number">$1</span>');
-        
-        // Comments
-        highlighted = highlighted.replace(/\/\/.*$/gm, '<span class="hl-comment">$&</span>');
-        
-        // Operators
-        highlighted = highlighted.replace(/([+\-*\/=<>!&|%])/g, '<span class="hl-operator">$1</span>');
-        
-        return highlighted;
-    }</span>');
-        
-        // 2. Strings (aspas simples e duplas)
-        highlighted = highlighted.replace(/'([^'\\]*(\\.[^'\\]*)*)'/g, '<span class="hl-string">\'$1\'</span>');
-        highlighted = highlighted.replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, '<span class="hl-string">"$1"</span>');
-        
-        // 3. Numbers (inteiros e decimais)
-        highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="hl-number">$1</span>');
-        
-        // 4. Keywords (só palavras completas)
-        const keywords = ['void', 'main', 'String', 'int', 'double', 'bool', 'List', 'Map', 'var', 'final', 'const', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'return', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'implements', 'abstract', 'static', 'import', 'library', 'part', 'export', 'dynamic', 'null', 'true', 'false'];
-        
-        keywords.forEach(keyword => {
-            // Evita replacement dentro de outras tags
-            const regex = new RegExp(`(?<!<[^>]*?)\\b(${keyword})\\b(?![^<]*?>)`, 'g');
-            highlighted = highlighted.replace(regex, `<span class="hl-keyword">$1</span>`);
-        });
-        
-        // 5. Functions (só antes de parênteses e fora de tags)
-        const functions = ['print', 'length', 'add', 'remove', 'contains', 'toString', 'toStringAsFixed', 'keys', 'values', 'reduce'];
-        functions.forEach(func => {
-            const regex = new RegExp(`(?<!<[^>]*?)\\b(${func})(?=\\s*\\()(?![^<]*?>)`, 'g');
-            highlighted = highlighted.replace(regex, `<span class="hl-function">$1</span>`);
-        });
-        
-        // 6. Operators (cuidado para não afetar HTML)
-        highlighted = highlighted.replace(/(?<!<[^>]*?)([+\-*\/=<>!&|%])(?![^<]*?>)/g, '<span class="hl-operator">$1</span>');
-        
-        return highlighted;
-    }
-
-    escapeHtml(text) {
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
     setActiveChapter(chapterId) {
@@ -237,8 +90,8 @@ class DartGuideApp {
             });
         });
     }   
-    
     executeDartCode(code) {
+        
         console.log('Executando código Dart:', code);        
         
         const modal = document.createElement('div');
@@ -251,13 +104,13 @@ class DartGuideApp {
                 </div>
                 <div class="modal-body">
                     <p>Código a ser executado no DartPad:</p>
-                    <pre><code>${this.highlightDartCode(code)}</code></pre>
+                    <pre><code>${code}</code></pre>
                     <p><strong>Dica:</strong> Copie este código e cole no <a href="https://dartpad.dev" target="_blank">DartPad</a> para executar!</p>
                 </div>
             </div>
         `;
         
-        document.body.appendChild(modal);
+        document.body.appendChild(modal);        
         
         modal.querySelector('.close-modal').addEventListener('click', () => {
             document.body.removeChild(modal);
@@ -279,8 +132,7 @@ class DartGuideApp {
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));                
                 
                 header.classList.add('active');
-                const targetTab = document.querySelector(`[data-tab="${tabName}"].tab-content`);
-                if (targetTab) targetTab.classList.add('active');
+                document.querySelector(`[data-tab="${tabName}"].tab-content`).classList.add('active');
             });
         });
     }
@@ -294,11 +146,6 @@ class DartGuideApp {
                 const isVisible = solutionsDiv.style.display !== 'none';
                 solutionsDiv.style.display = isVisible ? 'none' : 'block';
                 toggleButton.textContent = isVisible ? 'Ver Gabarito dos Exercícios' : 'Ocultar Gabarito';
-                
-                // Reaplica highlighting se necessário
-                if (!isVisible) {
-                    setTimeout(() => this.applySyntaxHighlighting(), 100);
-                }
             });
         }
     }
@@ -370,7 +217,7 @@ class DartGuideApp {
     }
 }
 
-const styles = `
+const modalStyles = `
 <style>
 .execution-modal {
     position: fixed;
@@ -396,7 +243,7 @@ const styles = `
 }
 
 .modal-header {
-    background: var(--primary, #007acc);
+    background: var(--primary);
     color: white;
     padding: 1rem 1.5rem;
     display: flex;
@@ -432,57 +279,21 @@ const styles = `
 }
 
 .modal-body pre {
-    background: #2d3748;
+    background: #f8f9fa;
     padding: 1rem;
     border-radius: 4px;
-    border: 1px solid #4a5568;
+    border: 1px solid var(--border);
     overflow-x: auto;
-    color: #e2e8f0;
 }
 
 .modal-body code {
     font-family: 'Courier New', monospace;
-    color: #e2e8f0;
-}
-
-/* Syntax highlighting classes */
-pre code {
-    background: #2d3748 !important;
-    color: #e2e8f0 !important;
-    border-radius: 8px !important;
-    font-family: 'Courier New', monospace !important;
-}
-
-.hl-keyword {
-    color: #569cd6 !important;
-    font-weight: bold;
-}
-
-.hl-string {
-    color: #ce9178 !important;
-}
-
-.hl-number {
-    color: #b5cea8 !important;
-}
-
-.hl-function {
-    color: #dcdcaa !important;
-    font-weight: bold;
-}
-
-.hl-comment {
-    color: #6a9955 !important;
-    font-style: italic;
-}
-
-.hl-operator {
-    color: #d4d4d4 !important;
+    color: var(--dark);
 }
 </style>
 `;
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.head.insertAdjacentHTML('beforeend', styles);
+    document.head.insertAdjacentHTML('beforeend', modalStyles);
     new DartGuideApp();
 });
