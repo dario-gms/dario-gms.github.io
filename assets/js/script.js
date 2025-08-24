@@ -19,39 +19,41 @@ class DartGuideApp {
         this.init();
     }
 
-    async init() {
+    init() {
         this.loadSidebar();
         this.setupEventListeners();
         this.loadChapter(1);
-        // Carrega Prism.js em paralelo, sem bloquear a inicialização
-        this.loadPrism();
+        // Carrega highlighting depois que tudo estiver funcionando
+        setTimeout(() => this.setupSyntaxHighlighting(), 1000);
     }
 
-    async loadPrism() {
+    setupSyntaxHighlighting() {
+        // Aplica syntax highlighting manual imediatamente
+        this.applySyntaxHighlighting();
+        
+        // Tenta carregar Prism como melhoria opcional
+        this.loadPrismOptional();
+    }
+
+    loadPrismOptional() {
         try {
-            // Carrega JavaScript do Prism primeiro
-            const prismJS = document.createElement('script');
-            prismJS.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js';
-            prismJS.onload = () => {
-                // Carrega componente Dart
-                const prismDart = document.createElement('script');
-                prismDart.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js';
-                prismDart.onload = () => {
-                    // Carrega componente adicional para melhor suporte
-                    const prismClike = document.createElement('script');
-                    prismClike.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js';
-                    document.head.appendChild(prismClike);
-                };
-                document.head.appendChild(prismDart);
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js';
+            script.onload = () => {
+                // Re-aplica highlighting com Prism se carregar
+                setTimeout(() => this.applySyntaxHighlighting(), 200);
             };
-            document.head.appendChild(prismJS);
-        } catch (error) {
-            console.log('Prism não carregou, usando highlighting manual');
+            document.head.appendChild(script);
+        } catch (e) {
+            // Continua usando highlighting manual se Prism falhar
+            console.log('Usando highlighting manual');
         }
     }
 
     loadSidebar() {
         const sidebar = document.getElementById('sidebar');
+        if (!sidebar) return;
+        
         sidebar.innerHTML = `
             <div class="logo">
                 <i class="fas fa-code"></i>
@@ -80,108 +82,73 @@ class DartGuideApp {
     async loadChapter(chapterId) {
         try {
             const chapter = this.chapters.find(c => c.id == chapterId);
+            if (!chapter || !chapter.file) {
+                console.log('Capítulo ainda não disponível');
+                return;
+            }
+            
             const response = await fetch(`chapters/${chapter.file}`);
+            if (!response.ok) {
+                console.error('Erro ao carregar capítulo');
+                return;
+            }
+            
             const content = await response.text();
-            document.getElementById('content-container').innerHTML = content;
-            this.setActiveChapter(chapterId);
-            this.initChapterFeatures();
-            // Aplica syntax highlighting após carregar o conteúdo
-            this.applySyntaxHighlighting();
+            const contentContainer = document.getElementById('content-container');
+            if (contentContainer) {
+                contentContainer.innerHTML = content;
+                this.setActiveChapter(chapterId);
+                this.initChapterFeatures();
+                // Aplica highlighting no novo conteúdo
+                setTimeout(() => this.applySyntaxHighlighting(), 100);
+            }
         } catch (error) {
             console.error('Erro ao carregar capítulo:', error);
         }
     }
 
     applySyntaxHighlighting() {
-        // Encontra todos os blocos de código e adiciona classes do Prism
         const codeBlocks = document.querySelectorAll('pre code');
         
         codeBlocks.forEach(block => {
-            // Remove qualquer highlighting anterior
-            block.classList.remove('language-dart');
+            if (block.classList.contains('highlighted')) return;
             
-            // Adiciona classes necessárias para o Prism
-            block.classList.add('language-dart');
-            block.parentElement.classList.add('language-dart');
-            
-            // Preserva o código original
             const code = block.textContent;
-            
-            // Aplica o highlighting manualmente para garantir que funcione
-            block.innerHTML = this.manualDartHighlight(code);
+            block.innerHTML = this.highlightDartCode(code);
+            block.classList.add('highlighted');
         });
-
-        // Executa o Prism para fazer o highlighting se estiver carregado
-        if (window.Prism && window.Prism.highlight) {
-            setTimeout(() => {
-                codeBlocks.forEach(block => {
-                    const code = block.textContent;
-                    try {
-                        const highlighted = window.Prism.highlight(code, window.Prism.languages.dart, 'dart');
-                        block.innerHTML = highlighted;
-                    } catch (e) {
-                        // Fallback para highlighting manual
-                        block.innerHTML = this.manualDartHighlight(code);
-                    }
-                });
-            }, 100);
-        }
     }
 
-    manualDartHighlight(code) {
-        // Escapa HTML primeiro
+    highlightDartCode(code) {
         let highlighted = this.escapeHtml(code);
         
-        // Keywords do Dart
+        // Keywords
         const keywords = ['void', 'main', 'String', 'int', 'double', 'bool', 'List', 'Map', 'var', 'final', 'const', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'return', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'implements', 'abstract', 'static', 'import', 'library', 'part', 'export', 'dynamic', 'null', 'true', 'false'];
+        
+        keywords.forEach(keyword => {
+            const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
+            highlighted = highlighted.replace(regex, `<span class="hl-keyword">$1</span>`);
+        });
         
         // Functions
         const functions = ['print', 'length', 'add', 'remove', 'contains', 'toString', 'toStringAsFixed', 'keys', 'values', 'reduce'];
-        
-        // Aplica highlighting para keywords
-        keywords.forEach(keyword => {
-            const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
-            highlighted = highlighted.replace(regex, `<span class="token keyword">$1</span>`);
-        });
-        
-        // Aplica highlighting para functions
         functions.forEach(func => {
             const regex = new RegExp(`\\b(${func})(?=\\s*\\()`, 'g');
-            highlighted = highlighted.replace(regex, `<span class="token function">$1</span>`);
+            highlighted = highlighted.replace(regex, `<span class="hl-function">$1</span>`);
         });
         
         // Strings
-        highlighted = highlighted.replace(/'([^']*?)'/g, '<span class="token string">\'$1\'</span>');
-        highlighted = highlighted.replace(/"([^"]*?)"/g, '<span class="token string">"$1"</span>');
+        highlighted = highlighted.replace(/'([^']*?)'/g, '<span class="hl-string">\'$1\'</span>');
+        highlighted = highlighted.replace(/"([^"]*?)"/g, '<span class="hl-string">"$1"</span>');
         
         // Numbers
-        highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="token number">$1</span>');
+        highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="hl-number">$1</span>');
         
         // Comments
-        highlighted = highlighted.replace(/\/\/.*$/gm, '<span class="token comment">    applySyntaxHighlighting() {
-        // Encontra todos os blocos de código e adiciona classes do Prism
-        const codeBlocks = document.querySelectorAll('pre code');
-        
-        codeBlocks.forEach(block => {
-            // Adiciona classes necessárias para o Prism
-            block.classList.add('language-dart');
-            
-            // Escapa caracteres HTML se necessário
-            const code = block.textContent;
-            block.innerHTML = this.escapeHtml(code);
-        });
-
-        // Executa o Prism para fazer o highlighting
-        if (window.Prism) {
-            window.Prism.highlightAll();
-        }
-    }</span>');
+        highlighted = highlighted.replace(/\/\/.*$/gm, '<span class="hl-comment">$&</span>');
         
         // Operators
-        highlighted = highlighted.replace(/([+\-*\/=<>!&|%])/g, '<span class="token operator">$1</span>');
-        
-        // Punctuation
-        highlighted = highlighted.replace(/([{}()\[\];,.])/g, '<span class="token punctuation">$1</span>');
+        highlighted = highlighted.replace(/([+\-*\/=<>!&|%])/g, '<span class="hl-operator">$1</span>');
         
         return highlighted;
     }
@@ -236,18 +203,13 @@ class DartGuideApp {
                 </div>
                 <div class="modal-body">
                     <p>Código a ser executado no DartPad:</p>
-                    <pre><code class="language-dart">${this.escapeHtml(code)}</code></pre>
+                    <pre><code>${this.highlightDartCode(code)}</code></pre>
                     <p><strong>Dica:</strong> Copie este código e cole no <a href="https://dartpad.dev" target="_blank">DartPad</a> para executar!</p>
                 </div>
             </div>
         `;
         
         document.body.appendChild(modal);
-        
-        // Aplica syntax highlighting no modal
-        if (window.Prism) {
-            window.Prism.highlightAllUnder(modal);
-        }
         
         modal.querySelector('.close-modal').addEventListener('click', () => {
             document.body.removeChild(modal);
@@ -269,7 +231,8 @@ class DartGuideApp {
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));                
                 
                 header.classList.add('active');
-                document.querySelector(`[data-tab="${tabName}"].tab-content`).classList.add('active');
+                const targetTab = document.querySelector(`[data-tab="${tabName}"].tab-content`);
+                if (targetTab) targetTab.classList.add('active');
             });
         });
     }
@@ -284,7 +247,7 @@ class DartGuideApp {
                 solutionsDiv.style.display = isVisible ? 'none' : 'block';
                 toggleButton.textContent = isVisible ? 'Ver Gabarito dos Exercícios' : 'Ocultar Gabarito';
                 
-                // Reaplica syntax highlighting se necessário
+                // Reaplica highlighting se necessário
                 if (!isVisible) {
                     setTimeout(() => this.applySyntaxHighlighting(), 100);
                 }
@@ -359,7 +322,7 @@ class DartGuideApp {
     }
 }
 
-const modalStyles = `
+const styles = `
 <style>
 .execution-modal {
     position: fixed;
@@ -385,7 +348,7 @@ const modalStyles = `
 }
 
 .modal-header {
-    background: var(--primary);
+    background: var(--primary, #007acc);
     color: white;
     padding: 1rem 1.5rem;
     display: flex;
@@ -421,87 +384,57 @@ const modalStyles = `
 }
 
 .modal-body pre {
-    background: #f8f9fa;
+    background: #2d3748;
     padding: 1rem;
     border-radius: 4px;
-    border: 1px solid var(--border);
+    border: 1px solid #4a5568;
     overflow-x: auto;
+    color: #e2e8f0;
 }
 
 .modal-body code {
     font-family: 'Courier New', monospace;
-    color: var(--dark);
+    color: #e2e8f0;
 }
 
-/* Ajustes para o Prism.js */
-pre[class*="language-"],
+/* Syntax highlighting classes */
 pre code {
     background: #2d3748 !important;
-    border: 1px solid #4a5568 !important;
+    color: #e2e8f0 !important;
     border-radius: 8px !important;
-    color: #e2e8f0 !important;
-    font-family: 'Courier New', monospace !important;
-    font-size: 14px !important;
-    line-height: 1.5 !important;
-}
-
-code[class*="language-"] {
-    color: #e2e8f0 !important;
     font-family: 'Courier New', monospace !important;
 }
 
-/* Cores específicas para tokens */
-.token.keyword {
+.hl-keyword {
     color: #569cd6 !important;
-    font-weight: bold !important;
+    font-weight: bold;
 }
 
-.token.string {
+.hl-string {
     color: #ce9178 !important;
 }
 
-.token.number {
+.hl-number {
     color: #b5cea8 !important;
 }
 
-.token.function {
+.hl-function {
     color: #dcdcaa !important;
-    font-weight: bold !important;
+    font-weight: bold;
 }
 
-.token.comment {
+.hl-comment {
     color: #6a9955 !important;
-    font-style: italic !important;
+    font-style: italic;
 }
 
-.token.operator {
+.hl-operator {
     color: #d4d4d4 !important;
-}
-
-.token.punctuation {
-    color: #d4d4d4 !important;
-}
-
-/* Cores adicionais */
-.token.class-name {
-    color: #4ec9b0 !important;
-}
-
-.token.builtin {
-    color: #4ec9b0 !important;
-}
-
-.token.boolean {
-    color: #569cd6 !important;
-}
-
-.token.null {
-    color: #569cd6 !important;
 }
 </style>
 `;
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.head.insertAdjacentHTML('beforeend', modalStyles);
+    document.head.insertAdjacentHTML('beforeend', styles);
     new DartGuideApp();
 });
