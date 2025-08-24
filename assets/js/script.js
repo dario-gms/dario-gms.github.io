@@ -30,9 +30,6 @@ class DartGuideApp {
     setupSyntaxHighlighting() {
         // Aplica syntax highlighting manual imediatamente
         this.applySyntaxHighlighting();
-        
-        // Tenta carregar Prism como melhoria opcional
-        this.loadPrismOptional();
     }
 
     loadPrismOptional() {
@@ -111,15 +108,37 @@ class DartGuideApp {
         const codeBlocks = document.querySelectorAll('pre code');
         
         codeBlocks.forEach(block => {
+            // Pula se já foi processado
             if (block.classList.contains('highlighted')) return;
             
-            const code = block.textContent;
+            // Pega o texto original (sem HTML)
+            const code = block.textContent || block.innerText;
+            
+            // Limpa qualquer HTML anterior
+            block.innerHTML = '';
+            
+            // Aplica o highlighting
             block.innerHTML = this.highlightDartCode(code);
             block.classList.add('highlighted');
         });
     }
 
     highlightDartCode(code) {
+        // Remove qualquer escape HTML para trabalhar com texto puro
+        let highlighted = code
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&quot;/g, '"')
+            .replace(/&#039;/g, "'");
+        
+        // Escapa HTML novamente
+        highlighted = this.escapeHtml(highlighted);
+        
+        // Aplica highlighting em ordem específica para evitar conflitos
+        
+        // 1. Comentários primeiro (para não serem afetados pelo resto)
+        highlighted = highlighted.replace(/\/\/.*$/gm, '<span class="hl-comment">    highlightDartCode(code) {
         let highlighted = this.escapeHtml(code);
         
         // Keywords
@@ -149,6 +168,35 @@ class DartGuideApp {
         
         // Operators
         highlighted = highlighted.replace(/([+\-*\/=<>!&|%])/g, '<span class="hl-operator">$1</span>');
+        
+        return highlighted;
+    }</span>');
+        
+        // 2. Strings (aspas simples e duplas)
+        highlighted = highlighted.replace(/'([^'\\]*(\\.[^'\\]*)*)'/g, '<span class="hl-string">\'$1\'</span>');
+        highlighted = highlighted.replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, '<span class="hl-string">"$1"</span>');
+        
+        // 3. Numbers (inteiros e decimais)
+        highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="hl-number">$1</span>');
+        
+        // 4. Keywords (só palavras completas)
+        const keywords = ['void', 'main', 'String', 'int', 'double', 'bool', 'List', 'Map', 'var', 'final', 'const', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'return', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'implements', 'abstract', 'static', 'import', 'library', 'part', 'export', 'dynamic', 'null', 'true', 'false'];
+        
+        keywords.forEach(keyword => {
+            // Evita replacement dentro de outras tags
+            const regex = new RegExp(`(?<!<[^>]*?)\\b(${keyword})\\b(?![^<]*?>)`, 'g');
+            highlighted = highlighted.replace(regex, `<span class="hl-keyword">$1</span>`);
+        });
+        
+        // 5. Functions (só antes de parênteses e fora de tags)
+        const functions = ['print', 'length', 'add', 'remove', 'contains', 'toString', 'toStringAsFixed', 'keys', 'values', 'reduce'];
+        functions.forEach(func => {
+            const regex = new RegExp(`(?<!<[^>]*?)\\b(${func})(?=\\s*\\()(?![^<]*?>)`, 'g');
+            highlighted = highlighted.replace(regex, `<span class="hl-function">$1</span>`);
+        });
+        
+        // 6. Operators (cuidado para não afetar HTML)
+        highlighted = highlighted.replace(/(?<!<[^>]*?)([+\-*\/=<>!&|%])(?![^<]*?>)/g, '<span class="hl-operator">$1</span>');
         
         return highlighted;
     }
