@@ -46,8 +46,6 @@ O projeto utiliza as seguintes tecnologias:
      ```
    - Abra o arquivo `index.html` em seu navegador preferido.
 
-> **Nota:** Este projeto foi projetado para ser executado localmente ou hospedado em um serviço como GitHub Pages.
-
 ## Capítulos Disponíveis
 
 - **Capítulo 1:** Introdução ao Dart
@@ -65,25 +63,9 @@ O projeto utiliza as seguintes tecnologias:
 - **Capítulo 13:** Projetos Práticos
 - **Capítulo 14:** Próximos Passos
 
-## Contribuição
-
-Contribuições são bem-vindas! Siga os passos abaixo para contribuir:
-
-1. Faça um fork deste repositório.
-2. Crie uma nova branch:
-   ```bash
-   git checkout -b minha-nova-feature
-   ```
-3. Faça as alterações necessárias e adicione commits.
-4. Envie suas alterações:
-   ```bash
-   git push origin minha-nova-feature
-   ```
-5. Abra um Pull Request.
-
 ## Licença
 
-Este projeto está licenciado sob a [MIT License](LICENSE). Sinta-se à vontade para usá-lo e modificá-lo.
+Este projeto está licenciado sob a [MIT License](LICENSE). Sinta-se à vontade para usá-lo.
 
 ---
 
