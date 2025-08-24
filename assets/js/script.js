@@ -27,18 +27,18 @@ class DartGuideApp {
     }
 
     async loadPrism() {        
-        const prismCSS = document.createElement('link');
-        prismCSS.rel = 'stylesheet';
-        prismCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css';
-        document.head.appendChild(prismCSS);
-        
         return new Promise((resolve) => {
             const prismJS = document.createElement('script');
             prismJS.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js';
             prismJS.onload = () => {                
                 const prismDart = document.createElement('script');
                 prismDart.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-dart.min.js';
-                prismDart.onload = resolve;
+                prismDart.onload = () => {                    
+                    const prismClike = document.createElement('script');
+                    prismClike.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js';
+                    prismClike.onload = resolve;
+                    document.head.appendChild(prismClike);
+                };
                 document.head.appendChild(prismDart);
             };
             document.head.appendChild(prismJS);
@@ -86,7 +86,60 @@ class DartGuideApp {
         }
     }
 
-    applySyntaxHighlighting() {       
+    applySyntaxHighlighting() {        
+        const codeBlocks = document.querySelectorAll('pre code');
+        
+        codeBlocks.forEach(block => {            
+            block.classList.remove('language-dart');            
+           
+            block.classList.add('language-dart');
+            block.parentElement.classList.add('language-dart');            
+            
+            const code = block.textContent;            
+            
+            block.innerHTML = this.manualDartHighlight(code);
+        });
+        
+        if (window.Prism && window.Prism.highlight) {
+            setTimeout(() => {
+                codeBlocks.forEach(block => {
+                    const code = block.textContent;
+                    try {
+                        const highlighted = window.Prism.highlight(code, window.Prism.languages.dart, 'dart');
+                        block.innerHTML = highlighted;
+                    } catch (e) {                        
+                        block.innerHTML = this.manualDartHighlight(code);
+                    }
+                });
+            }, 100);
+        }
+    }
+
+    manualDartHighlight(code) {        
+        let highlighted = this.escapeHtml(code);       
+        
+        const keywords = ['void', 'main', 'String', 'int', 'double', 'bool', 'List', 'Map', 'var', 'final', 'const', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'return', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'implements', 'abstract', 'static', 'import', 'library', 'part', 'export', 'dynamic', 'null', 'true', 'false'];
+        
+        
+        const functions = ['print', 'length', 'add', 'remove', 'contains', 'toString', 'toStringAsFixed', 'keys', 'values', 'reduce'];        
+        
+        keywords.forEach(keyword => {
+            const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
+            highlighted = highlighted.replace(regex, `<span class="token keyword">$1</span>`);
+        });        
+        
+        functions.forEach(func => {
+            const regex = new RegExp(`\\b(${func})(?=\\s*\\()`, 'g');
+            highlighted = highlighted.replace(regex, `<span class="token function">$1</span>`);
+        });        
+        
+        highlighted = highlighted.replace(/'([^']*?)'/g, '<span class="token string">\'$1\'</span>');
+        highlighted = highlighted.replace(/"([^"]*?)"/g, '<span class="token string">"$1"</span>');        
+        
+        highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="token number">$1</span>');        
+        
+        highlighted = highlighted.replace(/\/\/.*$/gm, '<span class="token comment">    applySyntaxHighlighting() {
+       
         const codeBlocks = document.querySelectorAll('pre code');
         
         codeBlocks.forEach(block => {            
@@ -99,6 +152,13 @@ class DartGuideApp {
         if (window.Prism) {
             window.Prism.highlightAll();
         }
+    }</span>');        
+        
+        highlighted = highlighted.replace(/([+\-*\/=<>!&|%])/g, '<span class="token operator">$1</span>');        
+        
+        highlighted = highlighted.replace(/([{}()\[\];,.])/g, '<span class="token punctuation">$1</span>');
+        
+        return highlighted;
     }
 
     escapeHtml(text) {
@@ -158,7 +218,7 @@ class DartGuideApp {
         `;
         
         document.body.appendChild(modal);        
-       
+        
         if (window.Prism) {
             window.Prism.highlightAllUnder(modal);
         }
@@ -346,9 +406,25 @@ const modalStyles = `
     color: var(--dark);
 }
 
-/* Ajustes para o Prism.js */
+pre[class*="language-"],
+pre code {
+    background: #2d3748 !important;
+    border: 1px solid #4a5568 !important;
+    border-radius: 8px !important;
+    color: #e2e8f0 !important;
+    font-family: 'Courier New', monospace !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+code[class*="language-"] {
+    color: #e2e8f0 !important;
+    font-family: 'Courier New', monospace !important;
+}
+
 .token.keyword {
     color: #569cd6 !important;
+    font-weight: bold !important;
 }
 
 .token.string {
@@ -361,25 +437,37 @@ const modalStyles = `
 
 .token.function {
     color: #dcdcaa !important;
+    font-weight: bold !important;
 }
 
 .token.comment {
     color: #6a9955 !important;
+    font-style: italic !important;
 }
 
 .token.operator {
     color: #d4d4d4 !important;
 }
 
-pre[class*="language-"] {
-    background: #2d3748 !important;
-    border: 1px solid #4a5568 !important;
-    border-radius: 8px !important;
+.token.punctuation {
+    color: #d4d4d4 !important;
 }
 
-code[class*="language-"] {
-    color: #e2e8f0 !important;
-    font-family: 'Courier New', monospace !important;
+/* Cores adicionais */
+.token.class-name {
+    color: #4ec9b0 !important;
+}
+
+.token.builtin {
+    color: #4ec9b0 !important;
+}
+
+.token.boolean {
+    color: #569cd6 !important;
+}
+
+.token.null {
+    color: #569cd6 !important;
 }
 </style>
 `;
