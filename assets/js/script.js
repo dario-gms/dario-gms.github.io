@@ -1,219 +1,3 @@
-class DartPadIntegration {
-    constructor() {
-        this.init();
-    }
-
-    init() {
-        document.addEventListener('DOMContentLoaded', () => {
-            this.setupDartPadContainers();
-            this.setupModeSelectors();
-        });
-
-        // Se o DOM já estiver carregado
-        if (document.readyState !== 'loading') {
-            this.setupDartPadContainers();
-            this.setupModeSelectors();
-        }
-    }
-
-    setupDartPadContainers() {
-        // Encontrar todos os containers de código Dart
-        const codeContainers = document.querySelectorAll('.dartpad-container');
-        
-        codeContainers.forEach(container => {
-            const codeBlock = container.querySelector('.code-block pre code');
-            if (!codeBlock) return;
-            
-            const code = codeBlock.textContent;
-            const exampleTitle = container.querySelector('.dartpad-header span').textContent;
-            
-            // Criar container integrado com DartPad
-            const dartpadContainer = this.createDartPadContainer(code, exampleTitle);
-            
-            // Substituir o container original
-            container.parentNode.replaceChild(dartpadContainer, container);
-        });
-        
-        // Configurar os seletores de modo
-        this.setupModeSelectors();
-    }
-
-    createDartPadContainer(code, title) {
-        const container = document.createElement('div');
-        container.className = 'dartpad-integrated-container';
-        container.setAttribute('data-code', code);
-        
-        // Determinar o modo baseado no código (Dart ou Flutter)
-        const mode = code.includes('package:flutter') ? 'flutter' : 'dart';
-        container.setAttribute('data-mode', mode);
-        
-        container.innerHTML = `
-            <div class="dartpad-integrated-header">
-                <h3><i class="fas fa-code"></i> ${title}</h3>
-                <div class="dartpad-controls">
-                    <div class="dartpad-mode-selector">
-                        <button class="mode-btn ${mode === 'dart' ? 'active' : ''}" data-mode="dart">Dart</button>
-                        <button class="mode-btn ${mode === 'flutter' ? 'active' : ''}" data-mode="flutter">Flutter</button>
-                    </div>
-                    <button class="dartpad-btn" onclick="DartPadIntegration.openInNewTab(this)">
-                        <i class="fas fa-external-link-alt"></i> Abrir DartPad
-                    </button>
-                    <button class="dartpad-btn" onclick="DartPadIntegration.refreshDartPad(this)">
-                        <i class="fas fa-sync"></i> Atualizar
-                    </button>
-                </div>
-            </div>
-            <div class="dartpad-iframe-container">
-                <div class="dartpad-loading">
-                    <div class="spinner"></div>
-                    <p>Carregando DartPad...</p>
-                </div>
-                <iframe class="dartpad-iframe" style="display: none;"></iframe>
-            </div>
-        `;
-        
-        // Carregar o DartPad após um pequeno delay
-        setTimeout(() => this.loadDartPad(container), 500);
-        
-        return container;
-    }
-
-    loadDartPad(container) {
-        const code = container.getAttribute('data-code');
-        const mode = container.getAttribute('data-mode') || 'dart';
-        const iframe = container.querySelector('.dartpad-iframe');
-        const loading = container.querySelector('.dartpad-loading');
-
-        if (!code || !iframe) return;
-
-        // Codifica o código para URL
-        const encodedCode = encodeURIComponent(code);
-        
-        // Determina a URL base baseada no modo
-        let baseUrl = 'https://dartpad.dev/';
-        if (mode === 'flutter') {
-            baseUrl += 'embed-flutter.html?null_safety=true';
-        } else {
-            baseUrl += 'embed-dart.html?null_safety=true';
-        }
-
-        // URL completa com o código
-        const dartpadUrl = `${baseUrl}&id=${this.generateTempId()}&code=${encodedCode}`;
-
-        iframe.onload = () => {
-            loading.style.display = 'none';
-            iframe.style.display = 'block';
-        };
-
-        iframe.onerror = () => {
-            this.showFallback(container, code);
-        };
-
-        // Carrega o DartPad
-        iframe.src = baseUrl;
-        
-        // Injeta o código após o carregamento
-        iframe.onload = () => {
-            try {
-                // Esta é uma abordagem simplificada - na prática, a injeção de código
-                // é mais complexa devido às políticas de segurança do iframe
-                loading.style.display = 'none';
-                iframe.style.display = 'block';
-                
-                // Tenta injetar o código (pode não funcionar devido a restrições de CORS)
-                setTimeout(() => {
-                    try {
-                        iframe.contentWindow.postMessage({
-                            type: 'dartpad-set-code',
-                            code: code,
-                            mode: mode
-                        }, '*');
-                    } catch (e) {
-                        console.log('Injeção de código não permitida pelo DartPad');
-                    }
-                }, 1000);
-            } catch (e) {
-                this.showFallback(container, code);
-            }
-        };
-    }
-
-    showFallback(container, code) {
-        const iframeContainer = container.querySelector('.dartpad-iframe-container');
-        iframeContainer.innerHTML = `
-            <div class="dartpad-fallback">
-                <h4><i class="fas fa-exclamation-triangle"></i> DartPad não pôde ser carregado</h4>
-                <p>Clique no botão "Abrir DartPad" para executar este código:</p>
-                <pre style="text-align: left; background: var(--surface-alt); padding: 1rem; border-radius: 4px; overflow-x: auto; margin: 1rem 0;"><code>${code}</code></pre>
-                <button class="dartpad-btn" onclick="DartPadIntegration.openInNewTab(this)" style="color: var(--warning); border-color: var(--warning);">
-                    <i class="fas fa-external-link-alt"></i> Abrir no DartPad
-                </button>
-            </div>
-        `;
-    }
-
-    setupModeSelectors() {
-        document.querySelectorAll('.mode-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const container = e.target.closest('.dartpad-integrated-container');
-                const mode = e.target.getAttribute('data-mode');
-                
-                // Atualiza botões ativos
-                container.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                
-                // Atualiza modo do container
-                container.setAttribute('data-mode', mode);
-                
-                // Recarrega o DartPad com novo modo
-                this.loadDartPad(container);
-            });
-        });
-    }
-
-    static openInNewTab(button) {
-        const container = button.closest('.dartpad-integrated-container');
-        const code = container.getAttribute('data-code');
-        const mode = container.getAttribute('data-mode') || 'dart';
-        
-        // Cria URL do DartPad com código
-        let url = 'https://dartpad.dev/?null_safety=true';
-        if (mode === 'flutter') {
-            url = 'https://dartpad.dev/?id=flutter&null_safety=true';
-        }
-        
-        // Abre em nova aba
-        const newWindow = window.open(url, '_blank');
-        
-        // Tenta copiar código para clipboard para facilitar
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(code).then(() => {
-                console.log('Código copiado para clipboard');
-            });
-        }
-    }
-
-    static refreshDartPad(button) {
-        const container = button.closest('.dartpad-integrated-container');
-        const loading = container.querySelector('.dartpad-loading');
-        const iframe = container.querySelector('.dartpad-iframe');
-        
-        // Mostra loading
-        loading.style.display = 'flex';
-        iframe.style.display = 'none';
-        
-        // Recarrega
-        setTimeout(() => {
-            const integration = new DartPadIntegration();
-            integration.loadDartPad(container);
-        }, 500);
-    }
-
-    generateTempId() {
-        return Math.random().toString(36).substring(2, 15);
-    }
-}
-
 class DartGuideApp {
     constructor() {
         this.chapters = [
@@ -239,15 +23,10 @@ class DartGuideApp {
         this.loadSidebar();
         this.setupEventListeners();
         this.loadChapter(1);
-        
-        // Inicializar a integração do DartPad
-        new DartPadIntegration();
     }
 
     loadSidebar() {
         const sidebar = document.getElementById('sidebar');
-        if (!sidebar) return;
-        
         sidebar.innerHTML = `
             <div class="logo">
                 <i class="fas fa-code"></i>
@@ -276,8 +55,6 @@ class DartGuideApp {
     async loadChapter(chapterId) {
         try {
             const chapter = this.chapters.find(c => c.id == chapterId);
-            if (!chapter || !chapter.file) return;
-            
             const response = await fetch(`chapters/${chapter.file}`);
             const content = await response.text();
             document.getElementById('content-container').innerHTML = content;
@@ -300,9 +77,6 @@ class DartGuideApp {
         this.initSolutionToggle();
         this.initCopyButtons();
         this.initNavigation();
-        
-        // Reinicializar a integração do DartPad para a nova página
-        new DartPadIntegration();
     }
 
     initDartPads() {
@@ -315,10 +89,10 @@ class DartGuideApp {
                 }
             });
         });
-    }
-
+    }   
     executeDartCode(code) {
-        console.log('Executando código Dart:', code);
+        
+        console.log('Executando código Dart:', code);        
         
         const modal = document.createElement('div');
         modal.className = 'execution-modal';
@@ -336,7 +110,7 @@ class DartGuideApp {
             </div>
         `;
         
-        document.body.appendChild(modal);
+        document.body.appendChild(modal);        
         
         modal.querySelector('.close-modal').addEventListener('click', () => {
             document.body.removeChild(modal);
@@ -352,10 +126,10 @@ class DartGuideApp {
     initTabs() {
         document.querySelectorAll('.tab-header').forEach(header => {
             header.addEventListener('click', () => {
-                const tabName = header.dataset.tab;
+                const tabName = header.dataset.tab;                
                 
                 document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));                
                 
                 header.classList.add('active');
                 document.querySelector(`[data-tab="${tabName}"].tab-content`).classList.add('active');
@@ -384,7 +158,7 @@ class DartGuideApp {
                     const code = codeBlock.textContent;
                     
                     try {
-                        await navigator.clipboard.writeText(code);
+                        await navigator.clipboard.writeText(code);                        
                         
                         const originalText = button.innerHTML;
                         button.innerHTML = '<i class="fas fa-check"></i> Copiado!';
@@ -396,7 +170,7 @@ class DartGuideApp {
                         }, 2000);
                         
                     } catch (err) {
-                        console.error('Erro ao copiar código:', err);
+                        console.error('Erro ao copiar código:', err);                        
                         
                         const textArea = document.createElement('textarea');
                         textArea.value = code;
@@ -420,7 +194,7 @@ class DartGuideApp {
         const prevButton = document.querySelector('.nav-button:not(.next-button)');
         
         if (nextButton) {
-            nextButton.addEventListener('click', () => {
+            nextButton.addEventListener('click', () => {                
                 const currentChapter = parseInt(document.querySelector('.chapter-item.active').dataset.chapter);
                 const nextChapter = currentChapter + 1;
                 
@@ -431,7 +205,7 @@ class DartGuideApp {
         }
         
         if (prevButton && !prevButton.classList.contains('disabled')) {
-            prevButton.addEventListener('click', () => {
+            prevButton.addEventListener('click', () => {                
                 const currentChapter = parseInt(document.querySelector('.chapter-item.active').dataset.chapter);
                 const prevChapter = currentChapter - 1;
                 
@@ -443,7 +217,83 @@ class DartGuideApp {
     }
 }
 
-// Inicializar a aplicação quando o DOM estiver carregado
+const modalStyles = `
+<style>
+.execution-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    background: var(--primary);
+    color: white;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-modal:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-body pre {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    overflow-x: auto;
+}
+
+.modal-body code {
+    font-family: 'Courier New', monospace;
+    color: var(--dark);
+}
+</style>
+`;
+
 document.addEventListener('DOMContentLoaded', () => {
+    document.head.insertAdjacentHTML('beforeend', modalStyles);
     new DartGuideApp();
 });
