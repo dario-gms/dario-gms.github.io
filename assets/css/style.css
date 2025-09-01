@@ -1066,3 +1066,163 @@ body {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* Adicionar estas regras ao final do arquivo style.css */
+
+/* DartPad Integration Styles */
+.dartpad-integrated-container {
+    margin: 2rem 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    background: var(--surface-elevated);
+    transition: all var(--transition);
+}
+
+.dartpad-integrated-container:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.dartpad-integrated-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: var(--text-inverse);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.dartpad-integrated-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.dartpad-controls {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.dartpad-btn {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all var(--transition);
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+}
+
+.dartpad-btn:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    color: white;
+    text-decoration: none;
+}
+
+.dartpad-iframe-container {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    background: var(--background-alt);
+}
+
+.dartpad-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: white;
+}
+
+.dartpad-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+}
+
+.dartpad-loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border);
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.dartpad-fallback {
+    padding: 2rem;
+    background: var(--warning-light);
+    border: 1px solid var(--warning);
+    border-radius: var(--radius);
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.dartpad-fallback h4 {
+    color: var(--warning);
+    margin-bottom: 1rem;
+}
+
+.dartpad-mode-selector {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.1);
+    padding: 0.25rem;
+    border-radius: var(--radius);
+}
+
+.mode-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all var(--transition);
+}
+
+.mode-btn:hover,
+.mode-btn.active {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .dartpad-integrated-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .dartpad-controls {
+        justify-content: center;
+    }
+
+    .dartpad-iframe-container {
+        height: 500px;
+    }
+}
