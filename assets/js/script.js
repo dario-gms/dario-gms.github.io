@@ -89,29 +89,27 @@ class DartGuideApp {
                 }
             });
         });
-    }   
+    }
+
     executeDartCode(code) {
-        
-        console.log('Executando código Dart:', code);        
-        
+        // Criar o modal para o DartPad
         const modal = document.createElement('div');
         modal.className = 'execution-modal';
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Simulação de Execução</h3>
+                    <h3>Executar Código Dart</h3>
                     <button class="close-modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>Código a ser executado no DartPad:</p>
-                    <pre><code>${code}</code></pre>
-                    <p><strong>Dica:</strong> Copie este código e cole no <a href="https://dartpad.dev" target="_blank">DartPad</a> para executar!</p>
+                    <div id="dartpad-container" style="height: 500px; width: 100%;"></div>
                 </div>
             </div>
         `;
         
-        document.body.appendChild(modal);        
+        document.body.appendChild(modal);
         
+        // Fechar o modal
         modal.querySelector('.close-modal').addEventListener('click', () => {
             document.body.removeChild(modal);
         });
@@ -121,6 +119,69 @@ class DartGuideApp {
                 document.body.removeChild(modal);
             }
         });
+        
+        // Carregar o DartPad após o modal estar visível
+        setTimeout(() => {
+            this.loadDartPad(code);
+        }, 100);
+    }
+
+    loadDartPad(code) {
+        // Codificar o código para URL
+        const encodedCode = encodeURIComponent(code);
+        
+        // Criar o HTML do DartPad
+        const dartpadHtml = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>DartPad</title>
+                <style>
+                    body { margin: 0; padding: 0; overflow: hidden; }
+                    iframe { width: 100%; height: 100%; border: none; }
+                </style>
+            </head>
+            <body>
+                <iframe 
+                    src="https://dartpad.dev/embed-flutter.html?theme=${this.getTheme()}&run=true&split=60&code=${encodedCode}"
+                    frameborder="0"
+                    allowfullscreen
+                ></iframe>
+            </body>
+            </html>
+        `;
+        
+        // Criar um blob e URL para o HTML
+        const blob = new Blob([dartpadHtml], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        
+        // Criar iframe para conter o DartPad
+        const dartpadIframe = document.createElement('iframe');
+        dartpadIframe.src = url;
+        dartpadIframe.style.width = '100%';
+        dartpadIframe.style.height = '100%';
+        dartpadIframe.style.border = 'none';
+        
+        // Adicionar ao container
+        const container = document.getElementById('dartpad-container');
+        container.innerHTML = '';
+        container.appendChild(dartpadIframe);
+        
+        // Limpar a URL quando o modal for fechado
+        const modal = document.querySelector('.execution-modal');
+        const observer = new MutationObserver(() => {
+            if (!document.body.contains(modal)) {
+                URL.revokeObjectURL(url);
+                observer.disconnect();
+            }
+        });
+        
+        observer.observe(document.body, { childList: true });
+    }
+
+    getTheme() {
+        // Verificar se o tema escuro está ativo
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
     }
     
     initTabs() {
@@ -217,83 +278,7 @@ class DartGuideApp {
     }
 }
 
-const modalStyles = `
-<style>
-.execution-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 8px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 80%;
-    overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header {
-    background: var(--primary);
-    color: white;
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.modal-header h3 {
-    margin: 0;
-}
-
-.close-modal {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.close-modal:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-}
-
-.modal-body {
-    padding: 1.5rem;
-}
-
-.modal-body pre {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    overflow-x: auto;
-}
-
-.modal-body code {
-    font-family: 'Courier New', monospace;
-    color: var(--dark);
-}
-</style>
-`;
-
+// Inicializar a aplicação quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
-    document.head.insertAdjacentHTML('beforeend', modalStyles);
     new DartGuideApp();
 });
