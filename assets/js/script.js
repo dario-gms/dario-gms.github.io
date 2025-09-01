@@ -92,7 +92,8 @@ class DartGuideApp {
     }
 
     executeDartCode(code) {
-        if (!code.trim()) {
+        // Sempre limpa o código se estiver vazio ou for o exemplo padrão
+        if (!code || !code.trim() || code.trim() === "void main() {\n  print('Hello, World!');\n}") {
             code = "";
         }
         
@@ -133,12 +134,13 @@ class DartGuideApp {
     }
 
     loadDartPad(code) {
-        if (!code || code.trim() === "void main() {\n  print('Hello, World!');\n}") {
-            code = "";
-        }
-
-        const encodedCode = encodeURIComponent(code);
+        // Força a limpeza do código para sempre iniciar limpo
+        const cleanCode = code && code.trim() ? code.trim() : "";
+        const encodedCode = encodeURIComponent(cleanCode);
         const currentTheme = this.getTheme();
+        
+        // Adiciona um timestamp para forçar o reload e evitar cache
+        const timestamp = Date.now();
 
         const dartpadHtml = `
             <!DOCTYPE html>
@@ -152,8 +154,9 @@ class DartGuideApp {
                         display: flex;
                         justify-content: center;
                         align-items: center;
-                        height: 100%;
+                        height: 400px;
                         font-family: 'Inter', sans-serif;
+                        background: #f5f5f5;
                     }
                 </style>
             </head>
@@ -161,7 +164,7 @@ class DartGuideApp {
                 <div id="loading" class="loading">Carregando DartPad...</div>
                 <iframe 
                     id="dartpad-iframe"
-                    src="https://dartpad.dev/embed-dart.html?theme=${currentTheme}&run=true&split=70&code=${encodedCode}"
+                    src="https://dartpad.dev/embed-dart.html?theme=${currentTheme}&run=false&split=70&code=${encodedCode}&t=${timestamp}"
                     onload="document.getElementById('loading').style.display = 'none';"
                 ></iframe>
             </body>
@@ -182,6 +185,7 @@ class DartGuideApp {
         container.innerHTML = '';
         container.appendChild(dartpadIframe);
 
+        // Ajusta a altura do container baseada no conteúdo, não na viewport
         this.adjustContainerHeight();
 
         const modal = document.querySelector('.execution-modal');
@@ -197,13 +201,44 @@ class DartGuideApp {
     adjustContainerHeight() {
         const container = document.getElementById('dartpad-container');
         const modalContent = document.querySelector('.execution-modal .modal-content');
+        const modalHeader = document.querySelector('.execution-modal .modal-header');
 
+        // Calcula uma altura mais apropriada baseada no conteúdo
         const viewportHeight = window.innerHeight;
-        const height = Math.min(viewportHeight * 0.8, 900);
+        const viewportWidth = window.innerWidth;
+        
+        // Define altura mínima e máxima mais apropriadas
+        const minHeight = 400;
+        const maxHeight = Math.min(viewportHeight * 0.85, 800);
+        
+        // Ajusta baseado no tamanho da tela
+        let height;
+        if (viewportWidth < 768) {
+            // Mobile
+            height = Math.min(viewportHeight * 0.7, 500);
+        } else if (viewportWidth < 1200) {
+            // Tablet
+            height = Math.min(viewportHeight * 0.75, 600);
+        } else {
+            // Desktop
+            height = Math.min(viewportHeight * 0.8, 700);
+        }
+        
+        height = Math.max(height, minHeight);
+        height = Math.min(height, maxHeight);
 
         container.style.height = `${height}px`;
+        
         if (modalContent) {
-            modalContent.style.height = `${height + 60}px`;
+            const headerHeight = modalHeader ? modalHeader.offsetHeight : 60;
+            modalContent.style.height = `${height + headerHeight + 20}px`;
+            modalContent.style.maxHeight = `${maxHeight + headerHeight + 20}px`;
+        }
+        
+        // Adiciona estilos para melhor responsividade
+        const modal = document.querySelector('.execution-modal');
+        if (modal) {
+            modal.style.padding = viewportWidth < 768 ? '10px' : '20px';
         }
     }
 
