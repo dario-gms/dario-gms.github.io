@@ -1,3 +1,173 @@
+class DartPadIntegration {
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        document.addEventListener('DOMContentLoaded', () => {
+            this.setupDartPadContainers();
+        });
+
+        // Se o DOM já estiver carregado
+        if (document.readyState !== 'loading') {
+            this.setupDartPadContainers();
+        }
+    }
+
+    setupDartPadContainers() {
+        // Encontrar todos os containers de código Dart
+        const codeContainers = document.querySelectorAll('.dartpad-container');
+        
+        codeContainers.forEach(container => {
+            const codeBlock = container.querySelector('.code-block pre code');
+            if (!codeBlock) return;
+            
+            const code = codeBlock.textContent;
+            const exampleTitle = container.closest('.example').querySelector('h3').textContent;
+            
+            // Criar container integrado com DartPad
+            const dartpadContainer = this.createDartPadContainer(code, exampleTitle);
+            
+            // Substituir o container original
+            container.parentNode.replaceChild(dartpadContainer, container);
+        });
+    }
+
+    createDartPadContainer(code, title) {
+        const container = document.createElement('div');
+        container.className = 'dartpad-integrated-container';
+        container.setAttribute('data-code', code);
+        
+        // Determinar o modo baseado no código (Dart ou Flutter)
+        const mode = code.includes('package:flutter') ? 'flutter' : 'dart';
+        container.setAttribute('data-mode', mode);
+        
+        container.innerHTML = `
+            <div class="dartpad-integrated-header">
+                <h3><i class="fas fa-code"></i> ${title}</h3>
+                <div class="dartpad-controls">
+                    <div class="dartpad-mode-selector">
+                        <button class="mode-btn ${mode === 'dart' ? 'active' : ''}" data-mode="dart">Dart</button>
+                        <button class="mode-btn ${mode === 'flutter' ? 'active' : ''}" data-mode="flutter">Flutter</button>
+                    </div>
+                    <button class="dartpad-btn" onclick="DartPadIntegration.openInNewTab(this)">
+                        <i class="fas fa-external-link-alt"></i> Abrir DartPad
+                    </button>
+                    <button class="dartpad-btn" onclick="DartPadIntegration.refreshDartPad(this)">
+                        <i class="fas fa-sync"></i> Atualizar
+                    </button>
+                </div>
+            </div>
+            <div class="dartpad-iframe-container">
+                <div class="dartpad-loading">
+                    <div class="spinner"></div>
+                    <p>Carregando DartPad...</p>
+                </div>
+                <iframe class="dartpad-iframe" style="display: none;"></iframe>
+            </div>
+        `;
+        
+        // Carregar o DartPad após um pequeno delay
+        setTimeout(() => this.loadDartPad(container), 500);
+        
+        return container;
+    }
+
+    loadDartPad(container) {
+        const code = container.getAttribute('data-code');
+        const mode = container.getAttribute('data-mode') || 'dart';
+        const iframe = container.querySelector('.dartpad-iframe');
+        const loading = container.querySelector('.dartpad-loading');
+
+        if (!code || !iframe) return;
+
+        // Codifica o código para URL
+        const encodedCode = encodeURIComponent(code);
+        
+        // Determina a URL base baseada no modo
+        let baseUrl = 'https://dartpad.dev/';
+        if (mode === 'flutter') {
+            baseUrl += 'embed-flutter.html?null_safety=true';
+        } else {
+            baseUrl += 'embed-dart.html?null_safety=true';
+        }
+
+        // URL completa com o código
+        const dartpadUrl = `${baseUrl}&id=${this.generateTempId()}&code=${encodedCode}`;
+
+        iframe.onload = () => {
+            loading.style.display = 'none';
+            iframe.style.display = 'block';
+        };
+
+        iframe.onerror = () => {
+            this.showFallback(container, code);
+        };
+
+        // Carrega o DartPad
+        iframe.src = baseUrl;
+    }
+
+    showFallback(container, code) {
+        const iframeContainer = container.querySelector('.dartpad-iframe-container');
+        iframeContainer.innerHTML = `
+            <div class="dartpad-fallback">
+                <h4><i class="fas fa-exclamation-triangle"></i> DartPad não pôde ser carregado</h4>
+                <p>Clique no botão "Abrir DartPad" para executar este código:</p>
+                <pre style="text-align: left; background: #f8f9fa; padding: 1rem; border-radius: 4px; overflow-x: auto;"><code>${code}</code></pre>
+                <button class="dartpad-btn" onclick="DartPadIntegration.openInNewTab(this)" style="color: var(--warning); border-color: var(--warning);">
+                    <i class="fas fa-external-link-alt"></i> Abrir no DartPad
+                </button>
+            </div>
+        `;
+    }
+
+    static openInNewTab(button) {
+        const container = button.closest('.dartpad-integrated-container');
+        const code = container.getAttribute('data-code');
+        const mode = container.getAttribute('data-mode') || 'dart';
+        
+        // Cria URL do DartPad com código
+        let url = 'https://dartpad.dev/?null_safety=true';
+        if (mode === 'flutter') {
+            url += '&theme=dark';
+        }
+        
+        // Abre em nova aba
+        const newWindow = window.open(url, '_blank');
+        
+        // Tenta copiar código para clipboard para facilitar
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(code).then(() => {
+                console.log('Código copiado para clipboard');
+            });
+        }
+    }
+
+    static refreshDartPad(button) {
+        const container = button.closest('.dartpad-integrated-container');
+        const loading = container.querySelector('.dartpad-loading');
+        const iframe = container.querySelector('.dartpad-iframe');
+        
+        // Mostra loading
+        loading.style.display = 'flex';
+        iframe.style.display = 'none';
+        
+        // Recarrega
+        setTimeout(() => {
+            const integration = new DartPadIntegration();
+            integration.loadDartPad(container);
+        }, 500);
+    }
+
+    generateTempId() {
+        return Math.random().toString(36).substring(2, 15);
+    }
+}
+
+// Inicializar a integração do DartPad
+new DartPadIntegration();
+
 class DartGuideApp {
     constructor() {
         this.chapters = [
