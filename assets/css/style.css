@@ -1068,27 +1068,64 @@ body {
 }
 
 /* Ajustes para o modal do DartPad */
+.execution-modal {
+    z-index: 10000; /* Garantir que fique acima de tudo */
+}
+
 .execution-modal .modal-content {
-    max-width: 900px;
+    max-width: 95%;
     width: 95%;
-    height: 80vh;
+    max-height: 90vh;
+    height: auto;
+    margin: 2vh auto;
+}
+
+.execution-modal .modal-header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .execution-modal .modal-body {
     padding: 0;
-    height: calc(100% - 60px);
+    overflow: hidden;
 }
 
 #dartpad-container {
-    height: 100%;
     width: 100%;
     background: var(--surface);
+    transition: height var(--transition);
+}
+
+/* Ajustes para o tema escuro */
+[data-theme="dark"] .execution-modal .modal-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
 }
 
 /* Responsividade para o DartPad */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .execution-modal .modal-content {
         width: 98%;
-        height: 70vh;
+        max-height: 85vh;
     }
+}
+
+@media (max-width: 768px) {
+    .execution-modal .modal-content {
+        width: 99%;
+        height: auto;
+        max-height: 80vh;
+        margin: 1vh auto;
+    }
+    
+    #dartpad-container {
+        height: 500px !important;
+    }
+}
+
+/* Melhorias para o iframe do DartPad */
+.execution-modal iframe {
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
