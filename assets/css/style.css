@@ -1066,3 +1066,29 @@ body {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* Ajustes para o modal do DartPad */
+.execution-modal .modal-content {
+    max-width: 900px;
+    width: 95%;
+    height: 80vh;
+}
+
+.execution-modal .modal-body {
+    padding: 0;
+    height: calc(100% - 60px);
+}
+
+#dartpad-container {
+    height: 100%;
+    width: 100%;
+    background: var(--surface);
+}
+
+/* Responsividade para o DartPad */
+@media (max-width: 768px) {
+    .execution-modal .modal-content {
+        width: 98%;
+        height: 70vh;
+    }
+}
