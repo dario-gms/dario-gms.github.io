@@ -824,82 +824,137 @@ body {
     opacity: 0.6;
 }
 
-/* Execution Modal */
+/* MODAL DO DARTPAD - CORRIGIDO */
 .execution-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    backdrop-filter: blur(8px);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 10000 !important;
+    backdrop-filter: blur(8px) !important;
+    padding: 2vh 2vw !important;
+    box-sizing: border-box !important;
 }
 
-.modal-content {
-    background: var(--surface);
-    border-radius: var(--radius-lg);
-    max-width: 700px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border);
+.execution-modal .modal-content {
+    background: var(--surface) !important;
+    border-radius: var(--radius-lg) !important;
+    width: 96vw !important;
+    height: 92vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    box-shadow: var(--shadow-lg) !important;
+    border: 1px solid var(--border) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
 }
 
-.modal-header {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    padding: 1.5rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.execution-modal .modal-header {
+    background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+    color: white !important;
+    padding: 1rem 1.5rem !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
 }
 
-.modal-header h3 {
-    margin: 0;
-    font-weight: 600;
+.execution-modal .modal-header h3 {
+    margin: 0 !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
 }
 
-.close-modal {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all var(--transition);
+.execution-modal .close-modal {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    font-size: 1.2rem !important;
+    cursor: pointer !important;
+    padding: 0.4rem !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    transition: all var(--transition) !important;
+    flex-shrink: 0 !important;
 }
 
-.close-modal:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
+.execution-modal .close-modal:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: scale(1.1) !important;
 }
 
-.modal-body {
-    padding: 2rem;
+.execution-modal .modal-body {
+    flex: 1 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+    min-height: 0 !important;
 }
 
-.modal-body pre {
-    background: var(--background-alt);
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    overflow-x: auto;
-    font-family: 'Fira Code', 'JetBrains Mono', monospace;
+.execution-modal #dartpad-container {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    overflow: hidden !important;
+    background: var(--surface) !important;
+    position: relative !important;
 }
 
-.modal-body code {
-    color: var(--text-primary);
+.execution-modal #dartpad-container iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    display: block !important;
+    background: transparent !important;
+    overflow: hidden !important;
+}
+
+/* RESPONSIVIDADE DO MODAL */
+@media (max-width: 768px) {
+    .execution-modal {
+        padding: 1vh 1vw !important;
+    }
+    
+    .execution-modal .modal-content {
+        width: 98vw !important;
+        height: 94vh !important;
+    }
+    
+    .execution-modal .modal-header {
+        padding: 0.8rem 1rem !important;
+    }
+    
+    .execution-modal .modal-header h3 {
+        font-size: 1rem !important;
+    }
+    
+    .execution-modal .close-modal {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 1rem !important;
+    }
+}
+
+/* DARK MODE PARA O MODAL */
+[data-theme="dark"] .execution-modal .modal-content {
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] .execution-modal #dartpad-container {
+    background: var(--surface) !important;
 }
 
 /* Responsive Design */
@@ -1065,35 +1120,4 @@ body {
 [data-theme="dark"] .glass-effect {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Ajustes para o modal do DartPad */
-.execution-modal { z-index: 10000; }
-
-.execution-modal .modal-content {
-    max-width: 95%;
-    width: 95%;
-    max-height: 90vh;
-    height: auto;
-    margin: 2vh auto;
-}
-
-.execution-modal .modal-body { padding: 0; overflow: hidden; }
-
-#dartpad-container {
-    width: 100%;
-    background: var(--surface);
-    transition: height var(--transition);
-    height: 100%;
-}
-
-[data-theme="dark"] .execution-modal .modal-content {
-    background: var(--surface);
-    border: 1px solid var(--border);
-}
-
-.execution-modal iframe {
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    width: 100%;
-    height: 100%;
 }
