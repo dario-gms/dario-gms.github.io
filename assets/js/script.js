@@ -92,10 +92,8 @@ class DartGuideApp {
     }
 
     executeDartCode(code) {
-        // Sempre limpa o código se estiver vazio ou for o exemplo padrão
-        if (!code || !code.trim() || code.trim() === "void main() {\n  print('Hello, World!');\n}") {
-            code = "";
-        }
+        // Sempre inicia com código limpo
+        const cleanCode = "";
         
         const modal = document.createElement('div');
         modal.className = 'execution-modal';
@@ -119,7 +117,8 @@ class DartGuideApp {
         modal.querySelector('.close-modal').addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-        setTimeout(() => { this.loadDartPad(code); }, 100);
+        // Carrega o DartPad imediatamente com código limpo
+        setTimeout(() => { this.loadDartPad(cleanCode); }, 50);
         
         const handleEscape = (e) => {
             if (e.key === 'Escape') {
@@ -134,13 +133,13 @@ class DartGuideApp {
     }
 
     loadDartPad(code) {
-        // Força a limpeza do código para sempre iniciar limpo
-        const cleanCode = code && code.trim() ? code.trim() : "";
-        const encodedCode = encodeURIComponent(cleanCode);
+        // Sempre força código limpo - ignora qualquer código passado
+        const cleanCode = "";
         const currentTheme = this.getTheme();
         
-        // Adiciona um timestamp para forçar o reload e evitar cache
+        // Adiciona timestamp único para forçar novo carregamento
         const timestamp = Date.now();
+        const random = Math.random().toString(36).substring(7);
 
         const dartpadHtml = `
             <!DOCTYPE html>
@@ -148,15 +147,24 @@ class DartGuideApp {
             <head>
                 <title>DartPad</title>
                 <style>
-                    body { margin: 0; padding: 0; overflow: hidden; }
-                    iframe { width: 100%; height: 100%; border: none; }
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    html, body { height: 100%; overflow: hidden; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+                    iframe { 
+                        width: 100%; 
+                        height: 100%; 
+                        border: none; 
+                        display: block;
+                        background: transparent;
+                    }
                     .loading {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        height: 400px;
-                        font-family: 'Inter', sans-serif;
-                        background: #f5f5f5;
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        font-size: 16px;
+                        color: #666;
+                        z-index: 10;
                     }
                 </style>
             </head>
@@ -164,7 +172,9 @@ class DartGuideApp {
                 <div id="loading" class="loading">Carregando DartPad...</div>
                 <iframe 
                     id="dartpad-iframe"
-                    src="https://dartpad.dev/embed-dart.html?theme=${currentTheme}&run=false&split=70&code=${encodedCode}&t=${timestamp}"
+                    src="https://dartpad.dev/embed-dart.html?theme=${currentTheme}&run=false&split=50&ga_id=embedded&code=&t=${timestamp}&r=${random}"
+                    frameborder="0"
+                    scrolling="no"
                     onload="document.getElementById('loading').style.display = 'none';"
                 ></iframe>
             </body>
@@ -176,18 +186,22 @@ class DartGuideApp {
 
         const dartpadIframe = document.createElement('iframe');
         dartpadIframe.src = url;
-        dartpadIframe.style.width = '100%';
-        dartpadIframe.style.height = '100%';
-        dartpadIframe.style.border = 'none';
-        dartpadIframe.style.background = 'transparent';
+        dartpadIframe.style.cssText = `
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+            display: block !important;
+            background: transparent;
+        `;
 
         const container = document.getElementById('dartpad-container');
         container.innerHTML = '';
         container.appendChild(dartpadIframe);
 
-        // Ajusta a altura do container baseada no conteúdo, não na viewport
+        // Ajusta a altura após carregar
         this.adjustContainerHeight();
 
+        // Cleanup quando modal for removido
         const modal = document.querySelector('.execution-modal');
         const observer = new MutationObserver(() => {
             if (!document.body.contains(modal)) {
@@ -200,45 +214,66 @@ class DartGuideApp {
 
     adjustContainerHeight() {
         const container = document.getElementById('dartpad-container');
+        const modal = document.querySelector('.execution-modal');
         const modalContent = document.querySelector('.execution-modal .modal-content');
         const modalHeader = document.querySelector('.execution-modal .modal-header');
 
-        // Calcula uma altura mais apropriada baseada no conteúdo
+        if (!container || !modal || !modalContent) return;
+
+        // Dimensões da viewport
         const viewportHeight = window.innerHeight;
         const viewportWidth = window.innerWidth;
         
-        // Define altura mínima e máxima mais apropriadas
-        const minHeight = 400;
-        const maxHeight = Math.min(viewportHeight * 0.85, 800);
+        // Calcula altura do header
+        const headerHeight = modalHeader ? modalHeader.offsetHeight : 70;
         
-        // Ajusta baseado no tamanho da tela
-        let height;
-        if (viewportWidth < 768) {
-            // Mobile
-            height = Math.min(viewportHeight * 0.7, 500);
-        } else if (viewportWidth < 1200) {
-            // Tablet
-            height = Math.min(viewportHeight * 0.75, 600);
-        } else {
-            // Desktop
-            height = Math.min(viewportHeight * 0.8, 700);
-        }
+        // Define altura baseada na viewport, deixando espaço para respirar
+        const availableHeight = viewportHeight * 0.85;
+        const containerHeight = availableHeight - headerHeight - 40; // 40px para padding
         
-        height = Math.max(height, minHeight);
-        height = Math.min(height, maxHeight);
+        // Define altura mínima e máxima
+        const minHeight = Math.min(500, viewportHeight * 0.6);
+        const maxHeight = viewportHeight * 0.8 - headerHeight;
+        
+        const finalHeight = Math.max(minHeight, Math.min(containerHeight, maxHeight));
 
-        container.style.height = `${height}px`;
+        // Aplica as dimensões
+        container.style.height = `${finalHeight}px`;
+        container.style.minHeight = `${minHeight}px`;
+        container.style.overflow = 'hidden';
         
-        if (modalContent) {
-            const headerHeight = modalHeader ? modalHeader.offsetHeight : 60;
-            modalContent.style.height = `${height + headerHeight + 20}px`;
-            modalContent.style.maxHeight = `${maxHeight + headerHeight + 20}px`;
+        // Ajusta o modal content
+        modalContent.style.height = 'auto';
+        modalContent.style.maxHeight = `${viewportHeight * 0.9}px`;
+        modalContent.style.overflow = 'hidden';
+        modalContent.style.display = 'flex';
+        modalContent.style.flexDirection = 'column';
+        
+        // Garante que o modal body ocupe o espaço restante
+        const modalBody = document.querySelector('.execution-modal .modal-body');
+        if (modalBody) {
+            modalBody.style.flex = '1';
+            modalBody.style.overflow = 'hidden';
+            modalBody.style.padding = '0';
+            modalBody.style.height = `${finalHeight}px`;
         }
         
-        // Adiciona estilos para melhor responsividade
-        const modal = document.querySelector('.execution-modal');
-        if (modal) {
-            modal.style.padding = viewportWidth < 768 ? '10px' : '20px';
+        // Ajusta o modal principal
+        modal.style.padding = viewportWidth < 768 ? '5vh 2vw' : '5vh 5vw';
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        
+        // Força o iframe a ocupar todo o espaço disponível
+        const iframe = container.querySelector('iframe');
+        if (iframe) {
+            iframe.style.cssText = `
+                width: 100% !important;
+                height: 100% !important;
+                border: none !important;
+                display: block !important;
+                min-height: ${finalHeight}px !important;
+            `;
         }
     }
 
