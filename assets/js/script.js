@@ -92,12 +92,10 @@ class DartGuideApp {
     }
 
     executeDartCode(code) {
-        // Verificar se é o código padrão e substituir por um mais limpo
-        if (code.trim() === "void main() {\n  print('Hello, World!');\n}") {
-            code = "// Cole seu código Dart aqui\nvoid main() {\n  // Seu código aqui\n}";
+        if (!code.trim()) {
+            code = "";
         }
         
-        // Criar o modal para o DartPad
         const modal = document.createElement('div');
         modal.className = 'execution-modal';
         modal.innerHTML = `
@@ -114,116 +112,78 @@ class DartGuideApp {
         
         document.body.appendChild(modal);
         
-        // Fechar o modal
         const closeModal = () => {
             document.body.removeChild(modal);
         };
-        
         modal.querySelector('.close-modal').addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+        setTimeout(() => { this.loadDartPad(code); }, 100);
         
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-        
-        // Carregar o DartPad após o modal estar visível
-        setTimeout(() => {
-            this.loadDartPad(code);
-        }, 100);
-        
-        // Tecla ESC para fechar o modal
         const handleEscape = (e) => {
             if (e.key === 'Escape') {
                 closeModal();
                 document.removeEventListener('keydown', handleEscape);
             }
         };
-        
         document.addEventListener('keydown', handleEscape);
-        
-        // Remover o listener quando o modal for fechado
         modal.addEventListener('DOMNodeRemoved', () => {
             document.removeEventListener('keydown', handleEscape);
         });
     }
 
     loadDartPad(code) {
-        // Remover código padrão se estiver vazio ou conter apenas o exemplo básico
         if (!code || code.trim() === "void main() {\n  print('Hello, World!');\n}") {
-            code = "// Cole seu código Dart aqui\nvoid main() {\n  // Seu código aqui\n}";
+            code = "";
         }
-        
-        // Codificar o código para URL
+
         const encodedCode = encodeURIComponent(code);
-        
-        // Obter o tema atual
         const currentTheme = this.getTheme();
-        
-        // Criar o HTML do DartPad
+
         const dartpadHtml = `
             <!DOCTYPE html>
             <html>
             <head>
                 <title>DartPad</title>
                 <style>
-                    body { 
-                        margin: 0; 
-                        padding: 0; 
-                        overflow: hidden;
-                        background-color: ${currentTheme === 'dark' ? '#1e293b' : '#f1f5f9'};
-                    }
-                    iframe { 
-                        width: 100%; 
-                        height: 100%; 
-                        border: none;
-                    }
+                    body { margin: 0; padding: 0; overflow: hidden; }
+                    iframe { width: 100%; height: 100%; border: none; }
                     .loading {
                         display: flex;
                         justify-content: center;
                         align-items: center;
                         height: 100%;
-                        color: ${currentTheme === 'dark' ? '#cbd5e1' : '#64748b'};
                         font-family: 'Inter', sans-serif;
                     }
                 </style>
             </head>
             <body>
-                <div id="loading" class="loading">
-                    <div>Carregando DartPad...</div>
-                </div>
+                <div id="loading" class="loading">Carregando DartPad...</div>
                 <iframe 
                     id="dartpad-iframe"
                     src="https://dartpad.dev/embed-dart.html?theme=${currentTheme}&run=true&split=70&code=${encodedCode}"
-                    frameborder="0"
-                    allowfullscreen
                     onload="document.getElementById('loading').style.display = 'none';"
                 ></iframe>
             </body>
             </html>
         `;
-        
-        // Criar um blob e URL para o HTML
+
         const blob = new Blob([dartpadHtml], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
-        
-        // Criar iframe para conter o DartPad
+
         const dartpadIframe = document.createElement('iframe');
         dartpadIframe.src = url;
         dartpadIframe.style.width = '100%';
         dartpadIframe.style.height = '100%';
         dartpadIframe.style.border = 'none';
         dartpadIframe.style.background = 'transparent';
-        
-        // Adicionar ao container
+
         const container = document.getElementById('dartpad-container');
         container.innerHTML = '';
         container.appendChild(dartpadIframe);
-        
-        // Ajustar altura do container baseado no código
-        this.adjustContainerHeight(code);
-        
-        // Limpar a URL quando o modal for fechado
+
+        this.adjustContainerHeight();
+
         const modal = document.querySelector('.execution-modal');
         const observer = new MutationObserver(() => {
             if (!document.body.contains(modal)) {
@@ -231,32 +191,23 @@ class DartGuideApp {
                 observer.disconnect();
             }
         });
-        
         observer.observe(document.body, { childList: true });
     }
 
-    adjustContainerHeight(code) {
+    adjustContainerHeight() {
         const container = document.getElementById('dartpad-container');
-        const lineCount = code.split('\n').length;
-        
-        // Calcular altura baseada no número de linhas do código
-        let height = 400; // altura mínima
-        
-        if (lineCount > 15) {
-            height = Math.min(700, 400 + (lineCount - 15) * 20);
-        }
-        
-        container.style.height = `${height}px`;
-        
-        // Ajustar também a altura do modal
         const modalContent = document.querySelector('.execution-modal .modal-content');
+
+        const viewportHeight = window.innerHeight;
+        const height = Math.min(viewportHeight * 0.8, 900);
+
+        container.style.height = `${height}px`;
         if (modalContent) {
-            modalContent.style.height = `${height + 60}px`; // 60px para o cabeçalho
+            modalContent.style.height = `${height + 60}px`;
         }
     }
 
     getTheme() {
-        // Verificar se o tema escuro está ativo
         return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
     }
     
@@ -264,10 +215,8 @@ class DartGuideApp {
         document.querySelectorAll('.tab-header').forEach(header => {
             header.addEventListener('click', () => {
                 const tabName = header.dataset.tab;                
-                
                 document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));                
-                
                 header.classList.add('active');
                 document.querySelector(`[data-tab="${tabName}"].tab-content`).classList.add('active');
             });
@@ -354,7 +303,6 @@ class DartGuideApp {
     }
 }
 
-// Inicializar a aplicação quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
     new DartGuideApp();
 });
