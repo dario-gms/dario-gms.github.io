@@ -1,3 +1,229 @@
+// Dark Mode Manager - Gerenciamento de temas
+class DarkModeManager {
+    constructor() {
+        this.storageKey = 'dart-guide-theme';
+    }
+
+    init() {
+        this.createToggleButton();
+        this.loadSavedTheme();
+        this.setupEventListeners();
+        this.observeSystemTheme();
+    }
+
+    createToggleButton() {
+        // Verifica se o botão já existe (para evitar duplicação)
+        if (document.querySelector('.theme-toggle')) {
+            return;
+        }
+
+        const logo = document.querySelector('.logo');
+        if (!logo) {
+            console.warn('Logo element not found. Cannot create theme toggle.');
+            return;
+        }
+
+        const toggleButton = document.createElement('button');
+        toggleButton.className = 'theme-toggle';
+        toggleButton.setAttribute('aria-label', 'Alternar tema');
+        toggleButton.innerHTML = '<i class="fas fa-moon"></i>';
+        
+        logo.appendChild(toggleButton);
+    }
+
+    setupEventListeners() {
+        const toggleButton = document.querySelector('.theme-toggle');
+        if (toggleButton) {
+            toggleButton.addEventListener('click', () => {
+                this.toggleTheme();
+            });
+        }
+
+        // Keyboard shortcut (Ctrl/Cmd + Shift + D)
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+                e.preventDefault();
+                this.toggleTheme();
+            }
+        });
+    }
+
+    toggleTheme() {
+        const currentTheme = this.getCurrentTheme();
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        this.setTheme(newTheme);
+    }
+
+    setTheme(theme) {
+        const html = document.documentElement;
+        const toggleButton = document.querySelector('.theme-toggle');
+        
+        // Remove tema anterior e aplica novo
+        html.removeAttribute('data-theme');
+        if (theme === 'dark') {
+            html.setAttribute('data-theme', 'dark');
+        }
+        
+        // Atualiza ícone do botão
+        if (toggleButton) {
+            const icon = toggleButton.querySelector('i');
+            if (icon) {
+                icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+            
+            // Adiciona feedback visual
+            toggleButton.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                toggleButton.style.transform = 'scale(1)';
+            }, 150);
+        }
+        
+        // Salva preferência
+        this.saveTheme(theme);
+        
+        // Dispara evento customizado para outros componentes
+        this.dispatchThemeChangeEvent(theme);
+        
+        // Atualiza DartPad se estiver aberto
+        this.updateDartPadTheme(theme);
+    }
+
+    getCurrentTheme() {
+        const html = document.documentElement;
+        return html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    }
+
+    saveTheme(theme) {
+        try {
+            localStorage.setItem(this.storageKey, theme);
+        } catch (error) {
+            console.warn('Cannot save theme preference:', error);
+        }
+    }
+
+    loadSavedTheme() {
+        try {
+            const savedTheme = localStorage.getItem(this.storageKey);
+            if (savedTheme && (savedTheme === 'dark' || savedTheme === 'light')) {
+                this.setTheme(savedTheme);
+                return;
+            }
+        } catch (error) {
+            console.warn('Cannot load saved theme:', error);
+        }
+        
+        // Se não há tema salvo, detecta preferência do sistema
+        this.detectSystemTheme();
+    }
+
+    detectSystemTheme() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            this.setTheme('dark');
+        } else {
+            this.setTheme('light');
+        }
+    }
+
+    observeSystemTheme() {
+        if (window.matchMedia) {
+            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            
+            // Listener para mudanças na preferência do sistema
+            const handleSystemThemeChange = (e) => {
+                // Só muda automaticamente se não há preferência salva
+                try {
+                    const savedTheme = localStorage.getItem(this.storageKey);
+                    if (!savedTheme) {
+                        this.setTheme(e.matches ? 'dark' : 'light');
+                    }
+                } catch (error) {
+                    // Se não pode acessar localStorage, segue a preferência do sistema
+                    this.setTheme(e.matches ? 'dark' : 'light');
+                }
+            };
+            
+            if (mediaQuery.addEventListener) {
+                mediaQuery.addEventListener('change', handleSystemThemeChange);
+            } else {
+                // Fallback para navegadores mais antigos
+                mediaQuery.addListener(handleSystemThemeChange);
+            }
+        }
+    }
+
+    dispatchThemeChangeEvent(theme) {
+        const event = new CustomEvent('themeChanged', {
+            detail: { theme: theme }
+        });
+        document.dispatchEvent(event);
+    }
+
+    updateDartPadTheme(theme) {
+        // Atualiza DartPad se estiver aberto
+        const dartpadIframe = document.querySelector('#dartpad-container iframe');
+        if (dartpadIframe) {
+            const currentSrc = dartpadIframe.src;
+            if (currentSrc.includes('dartpad.dev')) {
+                // Atualiza o parâmetro theme na URL
+                const url = new URL(currentSrc);
+                url.searchParams.set('theme', theme);
+                dartpadIframe.src = url.toString();
+            }
+        }
+    }
+
+    // Método público para ser usado por outros módulos
+    getTheme() {
+        return this.getCurrentTheme();
+    }
+
+    // Método para aplicar tema específico (útil para debugging)
+    applyTheme(theme) {
+        if (theme === 'dark' || theme === 'light') {
+            this.setTheme(theme);
+        } else {
+            console.warn('Invalid theme:', theme);
+        }
+    }
+
+    // Método para resetar para tema do sistema
+    resetToSystemTheme() {
+        try {
+            localStorage.removeItem(this.storageKey);
+            this.detectSystemTheme();
+        } catch (error) {
+            console.warn('Cannot reset theme:', error);
+            this.detectSystemTheme();
+        }
+    }
+
+    // Método para validar se as cores estão funcionando corretamente
+    validateTheme() {
+        const html = document.documentElement;
+        const computedStyle = getComputedStyle(html);
+        
+        const textColor = computedStyle.getPropertyValue('--text-primary').trim();
+        const backgroundColor = computedStyle.getPropertyValue('--background').trim();
+        
+        console.log('Current theme colors:', {
+            theme: this.getCurrentTheme(),
+            textColor: textColor,
+            backgroundColor: backgroundColor,
+            surfaceColor: computedStyle.getPropertyValue('--surface').trim()
+        });
+        
+        return {
+            isValid: textColor && backgroundColor,
+            colors: {
+                text: textColor,
+                background: backgroundColor,
+                surface: computedStyle.getPropertyValue('--surface').trim()
+            }
+        };
+    }
+}
+
+// Aplicação Principal - Dart Guide
 class DartGuideApp {
     constructor() {
         this.chapters = [
@@ -16,12 +242,21 @@ class DartGuideApp {
             { id: 13, title: "Projetos Práticos", icon: "laptop-code" },
             { id: 14, title: "Próximos Passos", icon: "flag-checkered" }
         ];
+        
+        // Inicializa o Dark Mode Manager
+        this.darkModeManager = new DarkModeManager();
+        
         this.init();
     }
 
     async init() {
         this.loadSidebar();
         this.setupEventListeners();
+        this.setupThemeEventListeners();
+        
+        // Inicializa o dark mode após carregar sidebar
+        this.darkModeManager.init();
+        
         this.loadChapter(1);
     }
 
@@ -31,6 +266,7 @@ class DartGuideApp {
             <div class="logo">
                 <i class="fas fa-code"></i>
                 <h1>Guia de Dart</h1>
+                <!-- O botão será criado automaticamente pelo DarkModeManager -->
             </div>
             <div class="chapters">
                 ${this.chapters.map(chapter => `
@@ -49,6 +285,41 @@ class DartGuideApp {
                 const chapterId = e.target.closest('.chapter-item').dataset.chapter;
                 this.loadChapter(chapterId);
             }
+        });
+    }
+
+    setupThemeEventListeners() {
+        // Escuta mudanças de tema para atualizar componentes se necessário
+        document.addEventListener('themeChanged', (e) => {
+            const newTheme = e.detail.theme;
+            console.log(`Tema alterado para: ${newTheme}`);
+            
+            // Aqui você pode adicionar lógica adicional quando o tema mudar
+            this.onThemeChanged(newTheme);
+        });
+    }
+
+    onThemeChanged(theme) {
+        // Atualiza qualquer componente específico que precise reagir à mudança de tema
+        this.updateCodeHighlighting(theme);
+        this.updateModalTheme(theme);
+    }
+
+    updateCodeHighlighting(theme) {
+        // Se você tiver alguma lógica específica para syntax highlighting
+        // baseada no tema, pode implementar aqui
+        const codeBlocks = document.querySelectorAll('.code-block');
+        codeBlocks.forEach(block => {
+            // Adiciona classe específica do tema se necessário
+            block.classList.toggle('dark-theme', theme === 'dark');
+        });
+    }
+
+    updateModalTheme(theme) {
+        // Atualiza modais existentes com o novo tema
+        const modals = document.querySelectorAll('.execution-modal');
+        modals.forEach(modal => {
+            modal.setAttribute('data-theme', theme);
         });
     }
 
@@ -97,11 +368,16 @@ class DartGuideApp {
         
         const modal = document.createElement('div');
         modal.className = 'execution-modal';
+        
+        // Aplica tema atual ao modal
+        const currentTheme = this.darkModeManager.getTheme();
+        modal.setAttribute('data-theme', currentTheme);
+        
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">
                     <h3>Executar Código Dart</h3>
-                    <button class="close-modal">&times;</button>
+                    <button class="close-modal" aria-label="Fechar modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div id="dartpad-container"></div>
@@ -114,11 +390,16 @@ class DartGuideApp {
         const closeModal = () => {
             document.body.removeChild(modal);
         };
+        
         modal.querySelector('.close-modal').addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        modal.addEventListener('click', (e) => { 
+            if (e.target === modal) closeModal(); 
+        });
 
         // Carrega o DartPad imediatamente com código limpo
-        setTimeout(() => { this.loadDartPad(cleanCode); }, 50);
+        setTimeout(() => { 
+            this.loadDartPad(cleanCode, currentTheme); 
+        }, 50);
         
         const handleEscape = (e) => {
             if (e.key === 'Escape') {
@@ -127,15 +408,17 @@ class DartGuideApp {
             }
         };
         document.addEventListener('keydown', handleEscape);
+        
+        // Cleanup quando modal for removido
         modal.addEventListener('DOMNodeRemoved', () => {
             document.removeEventListener('keydown', handleEscape);
         });
     }
 
-    loadDartPad(code) {
+    loadDartPad(code, theme = null) {
         // Sempre força código limpo - ignora qualquer código passado
         const cleanCode = "";
-        const currentTheme = this.getTheme();
+        const currentTheme = theme || this.darkModeManager.getTheme();
         
         // Adiciona timestamp único para forçar novo carregamento
         const timestamp = Date.now();
@@ -149,7 +432,11 @@ class DartGuideApp {
                 <style>
                     * { margin: 0; padding: 0; box-sizing: border-box; }
                     html, body { height: 100%; overflow: hidden; }
-                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+                    body { 
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                        background: ${currentTheme === 'dark' ? '#1e293b' : '#ffffff'};
+                        color: ${currentTheme === 'dark' ? '#f8fafc' : '#1e293b'};
+                    }
                     iframe { 
                         width: 100%; 
                         height: 100%; 
@@ -163,7 +450,7 @@ class DartGuideApp {
                         left: 50%;
                         transform: translate(-50%, -50%);
                         font-size: 16px;
-                        color: #666;
+                        color: ${currentTheme === 'dark' ? '#cbd5e1' : '#666'};
                         z-index: 10;
                     }
                 </style>
@@ -276,10 +563,6 @@ class DartGuideApp {
             `;
         }
     }
-
-    getTheme() {
-        return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-    }
     
     initTabs() {
         document.querySelectorAll('.tab-header').forEach(header => {
@@ -371,8 +654,50 @@ class DartGuideApp {
             });
         }
     }
+
+    // Método público para acessar o gerenciador de tema
+    getThemeManager() {
+        return this.darkModeManager;
+    }
+
+    // Método para forçar atualização do tema (útil para debugging)
+    refreshTheme() {
+        const currentTheme = this.darkModeManager.getTheme();
+        this.onThemeChanged(currentTheme);
+    }
 }
 
+// Inicialização e funções globais
 document.addEventListener('DOMContentLoaded', () => {
-    new DartGuideApp();
+    // Garante que só há uma instância da aplicação
+    if (!window.dartGuideApp) {
+        window.dartGuideApp = new DartGuideApp();
+    }
 });
+
+// Adiciona algumas funcionalidades globais para debugging/desenvolvimento
+if (typeof window !== 'undefined') {
+    window.toggleTheme = () => {
+        if (window.dartGuideApp && window.dartGuideApp.darkModeManager) {
+            window.dartGuideApp.darkModeManager.toggleTheme();
+        }
+    };
+    
+    window.setTheme = (theme) => {
+        if (window.dartGuideApp && window.dartGuideApp.darkModeManager) {
+            window.dartGuideApp.darkModeManager.applyTheme(theme);
+        }
+    };
+    
+    window.validateTheme = () => {
+        if (window.dartGuideApp && window.dartGuideApp.darkModeManager) {
+            return window.dartGuideApp.darkModeManager.validateTheme();
+        }
+    };
+    
+    window.resetTheme = () => {
+        if (window.dartGuideApp && window.dartGuideApp.darkModeManager) {
+            window.dartGuideApp.darkModeManager.resetToSystemTheme();
+        }
+    };
+}
