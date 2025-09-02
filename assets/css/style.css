@@ -1121,3 +1121,79 @@ body {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+[data-theme="dark"] a {
+    color: #94c5f7; 
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+[data-theme="dark"] a:hover {
+    color: #bdd7f5; 
+    text-decoration: underline;
+}
+
+[data-theme="dark"] a:visited {
+    color: #a8b3d1;
+}
+
+[data-theme="dark"] .references a,
+[data-theme="dark"] .chapter-content a {
+    color: #94c5f7;
+}
+
+[data-theme="dark"] .references a:hover,
+[data-theme="dark"] .chapter-content a:hover {
+    color: #bdd7f5;
+    text-decoration: underline;
+}
+
+[data-theme="dark"] .references a:visited,
+[data-theme="dark"] .chapter-content a:visited {
+    color: #a8b3d1;
+}
+
+[data-theme="dark"] ol a,
+[data-theme="dark"] ul a {
+    color: #94c5f7;
+}
+
+[data-theme="dark"] ol a:hover,
+[data-theme="dark"] ul a:hover {
+    color: #bdd7f5;
+}
+
+[data-theme="dark"] ol a:visited,
+[data-theme="dark"] ul a:visited {
+    color: #a8b3d1;
+}
+
+[data-theme="dark"] .chapter-objectives a,
+[data-theme="dark"] .prerequisites a {
+    color: #7fb3e3;
+}
+
+[data-theme="dark"] .chapter-objectives a:hover,
+[data-theme="dark"] .prerequisites a:hover {
+    color: #94c5f7;
+}
+
+[data-theme="dark"] .exercise a,
+[data-theme="dark"] .example a {
+    color: #7fb3e3;
+}
+
+[data-theme="dark"] .exercise a:hover,
+[data-theme="dark"] .example a:hover {
+    color: #94c5f7;
+}
+
+[data-theme="dark"] .surface-elevated a,
+[data-theme="dark"] .surface-alt a {
+    color: #a8c5e8; 
+}
+
+[data-theme="dark"] .surface-elevated a:hover,
+[data-theme="dark"] .surface-alt a:hover {
+    color: #bdd7f5;
+}
