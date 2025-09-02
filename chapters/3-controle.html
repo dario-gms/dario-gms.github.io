@@ -749,8 +749,16 @@ void main() {
             <div class="solutions" style="display: none;">
                 <div class="solution">
                     <h3>Resposta 1: Classificador de notas</h3>
-                    <div class="code-block">
-                        <pre><code>void main() {
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Resposta Exercício 1</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>void main() {
   List<double> notas = [95.5, 87.0, 72.5, 63.0, 45.0];
   
   for (double nota in notas) {
@@ -771,13 +779,22 @@ void main() {
     }
   }
 }</code></pre>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="solution">
                     <h3>Resposta 2: Calculadora com switch</h3>
-                    <div class="code-block">
-                        <pre><code>void main() {
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Resposta Exercício 2</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>void main() {
   double a = 10;
   double b = 3;
   String operacao = '/';
@@ -812,13 +829,22 @@ void main() {
     print('$a $op $b = $res');
   }
 }</code></pre>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="solution">
                     <h3>Resposta 3: Números primos</h3>
-                    <div class="code-block">
-                        <pre><code>void main() {
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Resposta Exercício 3</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>void main() {
   print('Números primos de 2 a 50:');
   
   for (int num = 2; num <= 50; num++) {
@@ -837,13 +863,22 @@ void main() {
     }
   }
 }</code></pre>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="solution">
                     <h3>Resposta 4: Jogo de adivinhação</h3>
-                    <div class="code-block">
-                        <pre><code>void main() {
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Resposta Exercício 4</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>void main() {
   int numeroSecreto = 42;
   List<int> tentativasUsuario = [25, 50, 40, 43, 42]; // Simula entrada
   int tentativas = 0;
@@ -879,13 +914,22 @@ void main() {
     print('😞 Suas tentativas acabaram! O número era $numeroSecreto');
   }
 }</code></pre>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="solution">
                     <h3>Resposta 5: Validador de CPF</h3>
-                    <div class="code-block">
-                        <pre><code>void main() {
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Resposta Exercício 5</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>void main() {
   List<String> cpfs = [
     '123.456.789-09', 
     '987.654.321-00', 
@@ -900,7 +944,7 @@ void main() {
   
   for (String cpf in cpfs) {
     // Verifica se o CPF tem o formato correto: XXX.XXX.XXX-XX
-    if (!RegExp(r'^\d{3}\.\d{3}\.\d{3}-\d{2}$').hasMatch(cpf)) {
+    if (!RegExp(r'^\d{3}\.\d{3}\.\d{3}-\d{2}).hasMatch(cpf)) {
       if (cpf.length < 14) {
         print('CPF "$cpf" está muito errado! Encerrando validação.');
         break; // Sai do loop se o formato estiver muito errado
@@ -911,7 +955,7 @@ void main() {
     }
     
     // Simulação de validação simples (aqui apenas verificamos se não é uma sequência repetida)
-    if (RegExp(r'^(\d)\1{10}$').hasMatch(cpf.replaceAll(RegExp(r'\D'), ''))) {
+    if (RegExp(r'^(\d)\1{10}).hasMatch(cpf.replaceAll(RegExp(r'\D'), ''))) {
       print('CPF "$cpf" é inválido! Pulando para o próximo.');
       continue; // Pula CPFs inválidos
     }
@@ -919,6 +963,7 @@ void main() {
     print('CPF "$cpf" é válido! ✅');
   }
 }</code></pre>
+                        </div>
                     </div>
                 </div>
             </div>
