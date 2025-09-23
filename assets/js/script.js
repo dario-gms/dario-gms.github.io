@@ -231,7 +231,7 @@ class DartGuideApp {
             { id: 2, title: "Fundamentos e Sintaxe", icon: "code", file: "2-fundamentos.html" },
             { id: 3, title: "Controle de Fluxo", icon: "random", file: "3-controle.html" },
             { id: 4, title: "Funções", icon: "cogs", file: "4-funcoes.html" },
-            { id: 5, title: "Coleções", icon: "list" },
+            { id: 5, title: "Coleções", icon: "5-list.html" },
             { id: 6, title: "Orientação a Objetos", icon: "object-group" },
             { id: 7, title: "Null Safety", icon: "exclamation-circle" },
             { id: 8, title: "Exceções", icon: "bug" },
