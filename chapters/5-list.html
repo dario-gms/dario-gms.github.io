@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 5: List, Map, Set, manipulação de String e num</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="chapter-header">
+        <h1 class="chapter-title">Capítulo 5: List, Map, Set, manipulação de String e num</h1>
+        <p class="chapter-subtitle">Dominando as principais coleções e tipos de dados do Dart</p>
+    </div>
+
+    <div class="chapter-content">
+        <div class="chapter-objectives">
+            <h2>Objetivos do Capítulo</h2>
+            <ol class="objectives-list">
+                <li>Compreender e utilizar as principais coleções do Dart: List, Map e Set</li>
+                <li>Dominar operações básicas e avançadas com String e números (num, int, double)</li>
+                <li>Aplicar métodos de manipulação e transformação de dados</li>
+                <li>Implementar soluções práticas usando essas estruturas</li>
+                <li>Reconhecer quando usar cada tipo de coleção</li>
+                <li>Desenvolver habilidades de processamento de texto e cálculos numéricos</li>
+            </ol>
+        </div>
+
+        <div class="prerequisites">
+            <h2>Pré-requisitos</h2>
+            <ul class="prereq-list">
+                <li>Conhecimento básico de variáveis e tipos em Dart</li>
+                <li>Familiaridade com funções e sintaxe básica</li>
+                <li>Acesso ao DartPad (https://dartpad.dev) para executar os exemplos</li>
+                <li>Conhecimento de conceitos de programação como loops e condicionais</li>
+            </ul>
+        </div>
+
+        <section class="content-section">
+            <h2>1. Introdução às Coleções</h2>
+            <p>As coleções são estruturas de dados que permitem armazenar múltiplos valores em uma única variável. Imagine uma coleção como um recipiente: uma <strong>List</strong> é como uma fila organizada, um <strong>Map</strong> é como um armário com gavetas etiquetadas, e um <strong>Set</strong> é como uma caixa que não aceita itens duplicados.</p>
+            
+            <p>Dart oferece três tipos principais de coleções, cada uma com características específicas:</p>
+            <ul>
+                <li><strong>List:</strong> Mantém ordem e permite duplicatas</li>
+                <li><strong>Map:</strong> Associa chaves a valores (como um dicionário)</li>
+                <li><strong>Set:</strong> Mantém elementos únicos sem ordem específica</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>2. List - Listas Ordenadas</h2>
+            <p>Uma <strong>List</strong> é uma coleção ordenada de elementos que pode conter duplicatas. É como uma lista de compras onde a ordem importa e você pode repetir itens.</p>
+            
+            <h3>Características principais:</h3>
+            <ul>
+                <li>Mantém ordem de inserção</li>
+                <li>Permite elementos duplicados</li>
+                <li>Acesso por índice (posição)</li>
+                <li>Dinâmica (pode crescer/diminuir)</li>
+            </ul>
+
+            <div class="example">
+                <h3>Exemplo 1 — List Básica: Gerenciando Lista de Compras</h3>
+                <div class="dartpad-container">
+                    <div class="dartpad-header">
+                        <span>DartPad - List Básica</span>
+                        <div class="dartpad-actions">
+                            <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                            <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  // Criando lista de compras
+  List<String> listaCompras = ['Leite', 'Pão', 'Ovos'];
+  
+  // Adicionando itens
+  listaCompras.add('Açúcar');
+  listaCompras.addAll(['Café', 'Arroz']);
+  
+  print('Lista completa: $listaCompras');
+  print('Primeiro item: ${listaCompras.first}');
+  print('Último item: ${listaCompras.last}');
+  print('Quantidade de itens: ${listaCompras.length}');
+  
+  // Acessando por índice
+  print('Item na posição 2: ${listaCompras[2]}');
+  
+  // Verificando se contém item
+  if (listaCompras.contains('Leite')) {
+    print('Leite está na lista!');
+  }
+  
+  // Removendo item
+  listaCompras.remove('Pão');
+  print('Após remover Pão: $listaCompras');
+  
+  // Iterando pela lista
+  print('\nItens na lista:');
+  for (String item in listaCompras) {
+    print('- $item');
+  }
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong></p>
+                    <ul>
+                        <li><code>List&lt;String&gt;</code> define uma lista que só aceita strings</li>
+                        <li><code>add()</code> adiciona um item ao final</li>
+                        <li><code>addAll()</code> adiciona múltiplos itens</li>
+                        <li><code>first</code> e <code>last</code> acessam primeiro e último elemento</li>
+                        <li><code>length</code> retorna o número de elementos</li>
+                        <li><code>contains()</code> verifica se um elemento existe</li>
+                        <li><code>remove()</code> remove a primeira ocorrência do elemento</li>
+                    </ul>
+                    <p><strong>Experimente:</strong> Troque os tipos de String para int e adicione números, observe como o comportamento muda.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>3. Map - Mapeamento Chave-Valor</h2>
+            <p>Um <strong>Map</strong> é uma coleção que associa chaves únicas a valores. É como um dicionário onde cada palavra (chave) tem uma definição (valor).</p>
+            
+            <h3>Características principais:</h3>
+            <ul>
+                <li>Chaves são únicas</li>
+                <li>Valores podem ser duplicados</li>
+                <li>Acesso direto por chave</li>
+                <li>Não mantém ordem específica (a menos que seja LinkedHashMap)</li>
+            </ul>
+
+            <div class="example">
+                <h3>Exemplo 2 — Map Básico: Cadastro de Usuários</h3>
+                <div class="dartpad-container">
+                    <div class="dartpad-header">
+                        <span>DartPad - Map Básico</span>
+                        <div class="dartpad-actions">
+                            <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                            <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  // Criando map com informações de usuário
+  Map<String, dynamic> usuario = {
+    'nome': 'João Silva',
+    'idade': 30,
+    'email': 'joao@email.com',
+    'ativo': true
+  };
+  
+  print('Usuário: $usuario');
+  print('Nome: ${usuario['nome']}');
+  print('Idade: ${usuario['idade']}');
+  
+  // Adicionando nova chave
+  usuario['telefone'] = '11999999999';
+  
+  // Modificando valor existente
+  usuario['idade'] = 31;
+  
+  print('\nApós modificações: $usuario');
+  
+  // Verificando se chave existe
+  if (usuario.containsKey('telefone')) {
+    print('Telefone cadastrado: ${usuario['telefone']}');
+  }
+  
+  // Iterando pelas chaves e valores
+  print('\nTodos os dados:');
+  usuario.forEach((chave, valor) {
+    print('$chave: $valor');
+  });
+  
+  // Obtendo todas as chaves
+  print('\nChaves disponíveis: ${usuario.keys.toList()}');
+  
+  // Obtendo todos os valores
+  print('Valores: ${usuario.values.toList()}');
+  
+  // Removendo chave
+  usuario.remove('ativo');
+  print('\nApós remover "ativo": $usuario');
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong></p>
+                    <ul>
+                        <li><code>Map&lt;String, dynamic&gt;</code> permite chaves string e valores de qualquer tipo</li>
+                        <li>Acesso por chave usando <code>map['chave']</code></li>
+                        <li><code>containsKey()</code> verifica se uma chave existe</li>
+                        <li><code>forEach()</code> itera por todos os pares chave-valor</li>
+                        <li><code>keys</code> e <code>values</code> retornam coleções de chaves e valores</li>
+                        <li><code>remove()</code> remove um par chave-valor</li>
+                    </ul>
+                    <p><strong>Experimente:</strong> Adicione mais campos como 'endereco' e 'profissao', observe como o Map cresce dinamicamente.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>4. Set - Conjuntos Únicos</h2>
+            <p>Um <strong>Set</strong> é uma coleção que contém apenas elementos únicos. É como uma coleção de selos onde não faz sentido ter o mesmo selo duas vezes.</p>
+            
+            <h3>Características principais:</h3>
+            <ul>
+                <li>Elementos únicos (sem duplicatas)</li>
+                <li>Não mantém ordem específica</li>
+                <li>Operações matemáticas de conjuntos (união, interseção)</li>
+                <li>Verificação de pertencimento muito eficiente</li>
+            </ul>
+
+            <div class="example">
+                <h3>Exemplo 3 — Set Básico: Controle de Tags Únicas</h3>
+                <div class="dartpad-container">
+                    <div class="dartpad-header">
+                        <span>DartPad - Set Básico</span>
+                        <div class="dartpad-actions">
+                            <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                            <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  // Criando set de tags
+  Set<String> tags = {'programacao', 'dart', 'iniciante'};
+  
+  print('Tags iniciais: $tags');
+  
+  // Tentando adicionar tag duplicada
+  tags.add('dart'); // Não adiciona pois já existe
+  print('Após tentar adicionar "dart" novamente: $tags');
+  
+  // Adicionando novas tags
+  tags.add('flutter');
+  tags.addAll(['mobile', 'web', 'programacao']); // 'programacao' já existe
+  
+  print('Tags após adições: $tags');
+  print('Quantidade de tags: ${tags.length}');
+  
+  // Verificando se contém tag
+  if (tags.contains('flutter')) {
+    print('Tag flutter encontrada!');
+  }
+  
+  // Criando outro set para operações
+  Set<String> tagsPopulares = {'flutter', 'react', 'javascript', 'dart'};
+  
+  // Interseção (tags em comum)
+  Set<String> tagsComuns = tags.intersection(tagsPopulares);
+  print('Tags em comum: $tagsComuns');
+  
+  // União (todas as tags sem duplicatas)
+  Set<String> todasTags = tags.union(tagsPopulares);
+  print('Todas as tags: $todasTags');
+  
+  // Diferença (tags que estão no primeiro mas não no segundo)
+  Set<String> tagsDiferentes = tags.difference(tagsPopulares);
+  print('Tags diferentes: $tagsDiferentes');
+  
+  // Convertendo set para lista
+  List<String> listaOrdenada = tags.toList()..sort();
+  print('Tags ordenadas: $listaOrdenada');
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong></p>
+                    <ul>
+                        <li>Set automaticamente elimina duplicatas</li>
+                        <li><code>intersection()</code> retorna elementos comuns entre sets</li>
+                        <li><code>union()</code> combina sets removendo duplicatas</li>
+                        <li><code>difference()</code> retorna elementos que estão em um set mas não no outro</li>
+                        <li><code>toList()</code> converte set para lista</li>
+                        <li><code>..sort()</code> é cascade notation para ordenar a lista</li>
+                    </ul>
+                    <p><strong>Experimente:</strong> Crie sets de números e teste as operações matemáticas, veja como o Set remove automaticamente duplicatas.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>5. String - Manipulação de Texto</h2>
+            <p><strong>String</strong> representa texto em Dart. Embora não seja tecnicamente uma coleção, oferece muitos métodos para manipular sequências de caracteres.</p>
+            
+            <h3>Características principais:</h3>
+            <ul>
+                <li>Imutável (não pode ser alterada após criação)</li>
+                <li>Rico em métodos de manipulação</li>
+                <li>Suporte a interpolação</li>
+                <li>Pode ser tratada como sequência de caracteres</li>
+            </ul>
+
+            <div class="example">
+                <h3>Exemplo 4 — String Avançada: Processamento de Texto</h3>
+                <div class="dartpad-container">
+                    <div class="dartpad-header">
+                        <span>DartPad - String Avançada</span>
+                        <div class="dartpad-actions">
+                            <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                            <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  String texto = '  Aprendendo Dart é Muito Legal!  ';
+  
+  print('Texto original: "$texto"');
+  print('Comprimento: ${texto.length}');
+  
+  // Limpeza e formatação
+  String textoLimpo = texto.trim();
+  print('Sem espaços nas bordas: "$textoLimpo"');
+  
+  String minuscula = textoLimpo.toLowerCase();
+  print('Minúscula: "$minuscula"');
+  
+  String maiuscula = textoLimpo.toUpperCase();
+  print('Maiúscula: "$maiuscula"');
+  
+  // Verificações
+  print('Contém "Dart": ${textoLimpo.contains("Dart")}');
+  print('Começa com "Aprendendo": ${textoLimpo.startsWith("Aprendendo")}');
+  print('Termina com "Legal!": ${textoLimpo.endsWith("Legal!")}');
+  
+  // Substituições
+  String textoSubstituido = textoLimpo.replaceAll('Dart', 'Flutter');
+  print('Substituindo Dart por Flutter: "$textoSubstituido"');
+  
+  // Divisão em palavras
+  List<String> palavras = textoLimpo.split(' ');
+  print('Palavras: $palavras');
+  print('Primeira palavra: ${palavras.first}');
+  print('Última palavra: ${palavras.last}');
+  
+  // Substring (pedaço da string)
+  String pedaco = textoLimpo.substring(0, 10);
+  print('Primeiros 10 caracteres: "$pedaco"');
+  
+  // Interpolação avançada
+  String nome = 'Maria';
+  int idade = 25;
+  String apresentacao = 'Olá, eu sou $nome e tenho $idade anos. '
+      'No próximo ano terei ${idade + 1} anos!';
+  print('Interpolação: $apresentacao');
+  
+  // Multilinha
+  String poema = '''
+Este é um texto
+que possui múltiplas linhas
+e preserva a formatação
+original.
+''';
+  print('Texto multilinha: $poema');
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong></p>
+                    <ul>
+                        <li><code>trim()</code> remove espaços do início e fim</li>
+                        <li><code>toLowerCase()</code> e <code>toUpperCase()</code> alteram o caso</li>
+                        <li><code>contains()</code>, <code>startsWith()</code>, <code>endsWith()</code> fazem verificações</li>
+                        <li><code>replaceAll()</code> substitui todas as ocorrências</li>
+                        <li><code>split()</code> divide string em lista</li>
+                        <li><code>substring()</code> extrai pedaço da string</li>
+                        <li>Interpolação com <code>$variavel</code> e <code>${expressão}</code></li>
+                        <li>Strings multilinhas com aspas triplas</li>
+                    </ul>
+                    <p><strong>Experimente:</strong> Mude o texto original e teste diferentes métodos, veja como cada um transforma a string de forma diferente.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>6. Números (num, int, double)</h2>
+            <p>Dart oferece três tipos numéricos principais:</p>
+            <ul>
+                <li><strong>num:</strong> Tipo base para números</li>
+                <li><strong>int:</strong> Números inteiros</li>
+                <li><strong>double:</strong> Números com ponto flutuante</li>
+            </ul>
+
+            <div class="example">
+                <h3>Exemplo 5 — Números: Calculadora Avançada</h3>
+                <div class="dartpad-container">
+                    <div class="dartpad-header">
+                        <span>DartPad - Números Avançados</span>
+                        <div class="dartpad-actions">
+                            <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                            <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre><code>import 'dart:math' as math;
+
+void main() {
+  // Diferentes tipos numéricos
+  int inteiro = 42;
+  double decimal = 3.14159;
+  num numero = 10; // Pode ser int ou double
+  
+  print('Inteiro: $inteiro (tipo: ${inteiro.runtimeType})');
+  print('Decimal: $decimal (tipo: ${decimal.runtimeType})');
+  print('Número: $numero (tipo: ${numero.runtimeType})');
+  
+  // Operações básicas
+  print('\n--- Operações Básicas ---');
+  print('$inteiro + $decimal = ${inteiro + decimal}');
+  print('$inteiro * $decimal = ${inteiro * decimal}');
+  print('$inteiro / 5 = ${inteiro / 5}'); // Sempre retorna double
+  print('$inteiro ~/ 5 = ${inteiro ~/ 5}'); // Divisão inteira
+  print('$inteiro % 5 = ${inteiro % 5}'); // Resto da divisão
+  
+  // Conversões
+  print('\n--- Conversões ---');
+  String textoNumero = '123.45';
+  int inteiroConvertido = int.parse('123');
+  double decimalConvertido = double.parse(textoNumero);
+  
+  print('String "$textoNumero" para double: $decimalConvertido');
+  print('Int $inteiro para String: "${inteiro.toString()}"');
+  
+  // Formatação de decimais
+  print('Pi com 2 casas decimais: ${decimal.toStringAsFixed(2)}');
+  print('Pi com 4 casas decimais: ${decimal.toStringAsFixed(4)}');
+  
+  // Funções matemáticas (requer import 'dart:math')
+  print('\n--- Funções Matemáticas ---');
+  print('Valor absoluto de -10: ${(-10).abs()}');
+  print('Raiz quadrada de 16: ${math.sqrt(16)}');
+  print('Potência 2³: ${math.pow(2, 3)}');
+  print('Máximo entre 10 e 20: ${math.max(10, 20)}');
+  print('Mínimo entre 10 e 20: ${math.min(10, 20)}');
+  
+  // Arredondamentos
+  double valorDecimal = 3.7;
+  print('\n--- Arredondamentos ---');
+  print('$valorDecimal arredondado: ${valorDecimal.round()}');
+  print('$valorDecimal para baixo: ${valorDecimal.floor()}');
+  print('$valorDecimal para cima: ${valorDecimal.ceil()}');
+  
+  // Validação de entrada
+  print('\n--- Validação ---');
+  String? entrada = '42abc'; // Simulando entrada do usuário
+  
+  int? numeroValidado = int.tryParse(entrada);
+  if (numeroValidado != null) {
+    print('Entrada "$entrada" é um número válido: $numeroValidado');
+  } else {
+    print('Entrada "$entrada" não é um número válido');
+  }
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong></p>
+                    <ul>
+                        <li><code>int.parse()</code> e <code>double.parse()</code> convertem strings para números</li>
+                        <li><code>int.tryParse()</code> retorna null se conversão falhar</li>
+                        <li><code>/</code> sempre retorna double, <code>~/</code> faz divisão inteira</li>
+                        <li><code>toStringAsFixed()</code> formata casas decimais</li>
+                        <li>Biblioteca <code>dart:math</code> oferece funções matemáticas</li>
+                        <li>Comparação de floats requer cuidado com precisão</li>
+                        <li><code>abs()</code>, <code>round()</code>, <code>floor()</code>, <code>ceil()</code> para operações numéricas</li>
+                    </ul>
+                    <p><strong>Experimente:</strong> Teste diferentes valores de entrada e veja como as validações se comportam com dados inválidos.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>7. Sistema Completo: Gerenciador de Biblioteca</h2>
+            <p>Este exemplo integra todas as estruturas estudadas em um sistema funcional.</p>
+
+            <div class="example">
+                <h3>Exemplo 6 — Sistema Completo</h3>
+                <div class="dartpad-container">
+                    <div class="dartpad-header">
+                        <span>DartPad - Sistema de Biblioteca</span>
+                        <div class="dartpad-actions">
+                            <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                            <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                    </div>
+                    <div class="code-block">
+                        <pre><code>void main() {
+  // Sistema completo usando todas as estruturas
+  
+  // Lista de livros disponíveis
+  List<Map<String, dynamic>> acervo = [
+    {
+      'id': 1,
+      'titulo': 'Dart: Guia Completo',
+      'autor': 'João Silva',
+      'ano': 2023,
+      'disponivel': true,
+      'categoria': 'programacao'
+    },
+    {
+      'id': 2,
+      'titulo': 'Flutter na Prática',
+      'autor': 'Maria Santos',
+      'ano': 2024,
+      'disponivel': false,
+      'categoria': 'programacao'
+    },
+    {
+      'id': 3,
+      'titulo': 'História do Brasil',
+      'autor': 'Carlos Pereira',
+      'ano': 2022,
+      'disponivel': true,
+      'categoria': 'historia'
+    }
+  ];
+  
+  // Set de categorias únicas
+  Set<String> categorias = {};
+  
+  // Map de usuários emprestados
+  Map<int, String> emprestimos = {
+    2: 'Ana Costa' // Livro ID 2 emprestado para Ana
+  };
+  
+  // Extraindo categorias do acervo
+  for (Map<String, dynamic> livro in acervo) {
+    categorias.add(livro['categoria'] as String);
+  }
+  
+  print('=== SISTEMA DE BIBLIOTECA ===\n');
+  
+  // 1. Relatório geral
+  print('📚 RELATÓRIO GERAL');
+  print('Total de livros: ${acervo.length}');
+  print('Categorias disponíveis: $categorias');
+  print('Livros emprestados: ${emprestimos.length}\n');
+  
+  // 2. Lista completa do acervo
+  print('📖 ACERVO COMPLETO');
+  for (int i = 0; i < acervo.length; i++) {
+    Map<String, dynamic> livro = acervo[i];
+    String status = livro['disponivel'] ? '✅ Disponível' : '❌ Emprestado';
+    String emprestadoPara = emprestimos.containsKey(livro['id']) 
+        ? ' (para: ${emprestimos[livro['id']]})' 
+        : '';
+    
+    print('${i + 1}. "${livro['titulo']}" - ${livro['autor']} (${livro['ano']})');
+    print('   Categoria: ${livro['categoria']} | $status$emprestadoPara');
+  }
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong></p>
+                    <p>Este exemplo integra todas as estruturas estudadas:</p>
+                    <ul>
+                        <li><strong>List:</strong> Armazena coleção de livros (Maps)</li>
+                        <li><strong>Map:</strong> Representa cada livro e controla empréstimos</li>
+                        <li><strong>Set:</strong> Mantém categorias únicas</li>
+                        <li><strong>String:</strong> Manipulação de texto para busca e formatação</li>
+                        <li><strong>num:</strong> Cálculos de estatísticas e percentuais</li>
+                    </ul>
+                    <p><strong>Experimente:</strong> Adicione novos livros ao acervo, simule mais empréstimos e veja como os relatórios se atualizam automaticamente.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>8. Boas Práticas</h2>
+            
+            <div class="best-practices">
+                <div class="practice-do">
+                    <h3>✅ Escolha a coleção certa:</h3>
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Boas Práticas</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>void main() {
+  // ✅ BOM: tipos específicos
+  List<String> nomes = ['Ana', 'João', 'Maria'];
+  Map<String, int> idades = {'Ana': 25, 'João': 30};
+  Set<int> numeros = {1, 2, 3, 4, 5};
+  
+  // ❌ EVITAR: tipos genéricos
+  // List nomes = [];
+  // Map dados = {};
+  
+  // ✅ BOM: validação de entrada
+  String? entrada = '123';
+  int? numero = int.tryParse(entrada);
+  if (numero != null) {
+    print('Número válido: $numero');
+  } else {
+    print('Entrada inválida: $entrada');
+  }
+  
+  // ✅ BOM: verificar limites antes de acessar
+  if (nomes.isNotEmpty) {
+    print('Primeiro nome: ${nomes.first}');
+  }
+  
+  // ❌ EVITAR: modificar coleção durante iteração
+  // for (String nome in nomes) {
+  //   if (condicao) nomes.remove(nome); // Perigoso!
+  // }
+  
+  // ✅ BOM: usar métodos apropriados
+  nomes.removeWhere((nome) => nome.length < 3);
+  print('Nomes filtrados: $nomes');
+  
+  // ✅ BOM: comparar números decimais com tolerância
+  double a = 0.1 + 0.2;
+  double b = 0.3;
+  bool saoIguais = (a - b).abs() < 0.0000001;
+  print('0.1 + 0.2 == 0.3? $saoIguais');
+}</code></pre>
+                    </div>
+                </div>
+                <div class="example-explanation">
+                    <p><strong>Explicação:</strong></p>
+                    <ul>
+                        <li>Sempre declare tipos específicos para melhor performance e detecção de erros</li>
+                        <li>Use <code>tryParse()</code> para conversões seguras que podem falhar</li>
+                        <li>Verifique limites antes de acessar elementos de coleções</li>
+                        <li>Use métodos como <code>removeWhere()</code> ao invés de modificar durante iteração</li>
+                        <li>Compare números decimais com tolerância devido à precisão de ponto flutuante</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Dicas Importantes:</h3>
+            <ol class="warning-list">
+                <li><strong>Performance:</strong> List é mais rápida para acesso por índice, Set para verificar se contém elemento</li>
+                <li><strong>Memória:</strong> Set usa menos memória que List quando não há duplicatas</li>
+                <li><strong>Imutabilidade:</strong> Strings são imutáveis - métodos retornam novas strings</li>
+                <li><strong>Null-safety:</strong> Use <code>?</code> para valores opcionais e <code>!</code> apenas quando tem certeza</li>
+                <li><strong>Escolha certa:</strong> List para ordem, Map para associações, Set para unicidade</li>
+            </ol>
+        </section>
+
+        <section class="content-section">
+            <h2>9. Casos de Uso Reais</h2>
+            
+            <div class="real-cases">
+                <div class="case">
+                    <h3>1. Desenvolvimento de Apps Mobile</h3>
+                    <p>Em Flutter, essas estruturas são fundamentais:</p>
+                    <div class="code-block">
+                        <pre><code>// Lista para ListView de produtos
+List<Map<String, dynamic>> produtos = [
+  {'nome': 'iPhone', 'preco': 5000.0, 'categoria': 'smartphone'},
+  {'nome': 'MacBook', 'preco': 8000.0, 'categoria': 'notebook'}
+];
+
+// Set para tags únicas
+Set<String> tagsPopulares = {'novo', 'promoção', 'entrega-rápida'};
+
+// Map para configurações do app
+Map<String, dynamic> configuracoes = {
+  'tema': 'escuro',
+  'notificacoes': true,
+  'idioma': 'pt-BR'
+};</code></pre>
+                    </div>
+                </div>
+                
+                <div class="case">
+                    <h3>2. APIs e Processamento de Dados</h3>
+                    <p>Manipulação de JSON e dados de APIs:</p>
+                    <div class="code-block">
+                        <pre><code>// Processando resposta de API
+Map<String, dynamic> response = {
+  'status': 200,
+  'data': [
+    {'id': 1, 'nome': 'João', 'email': 'joao@email.com'},
+    {'id': 2, 'nome': 'Maria', 'email': 'maria@email.com'}
+  ]
+};
+
+// Extraindo emails únicos
+Set<String> emails = (response['data'] as List)
+    .map((user) => user['email'] as String)
+    .toSet();</code></pre>
+                    </div>
+                </div>
+                
+                <div class="case">
+                    <h3>3. Validação e Formatação</h3>
+                    <p>Processamento de formulários e dados do usuário:</p>
+                    <div class="code-block">
+                        <pre><code>// Validação de entrada
+String validarEmail(String email) {
+  email = email.trim().toLowerCase();
+  if (!email.contains('@') || !email.contains('.')) {
+    return 'Email inválido';
+  }
+  return 'válido';
+}
+
+// Formatação de números para exibição
+String formatarMoeda(double valor) {
+  return 'R\$ ${valor.toStringAsFixed(2).replaceAll('.', ',')}';
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>10. Exercícios Práticos</h2>
+            
+            <div class="exercises">
+                <div class="exercise">
+                    <h3>Exercício 1: Análise de Vendas</h3>
+                    <p>Crie um programa que analise vendas mensais usando List e calcule estatísticas básicas.</p>
+                    <p><strong>Requisitos:</strong></p>
+                    <ul>
+                        <li>Lista com vendas de 12 meses</li>
+                        <li>Calcule: total, média, maior e menor venda</li>
+                        <li>Identifique o mês com melhor desempenho</li>
+                    </ul>
+                </div>
+                
+                <div class="exercise">
+                    <h3>Exercício 2: Catálogo de Produtos</h3>
+                    <p>Implemente um catálogo usando Map para produtos com preços e categorias.</p>
+                    <p><strong>Requisitos:</strong></p>
+                    <ul>
+                        <li>Map com pelo menos 5 produtos</li>
+                        <li>Busca por categoria e faixa de preço</li>
+                        <li>Produto mais caro e mais barato</li>
+                    </ul>
+                </div>
+                
+                <div class="exercise">
+                    <h3>Exercício 3: Sistema de Tags</h3>
+                    <p>Crie um sistema que gerencia tags de posts usando Set.</p>
+                    <p><strong>Requisitos:</strong></p>
+                    <ul>
+                        <li>Dois sets de tags diferentes</li>
+                        <li>Operações: união, interseção, diferença</li>
+                        <li>Contagem de tags únicas</li>
+                    </ul>
+                </div>
+                
+                <div class="exercise">
+                    <h3>Exercício 4: Processador de Texto</h3>
+                    <p>Desenvolva um analisador de texto usando String.</p>
+                    <p><strong>Requisitos:</strong></p>
+                    <ul>
+                        <li>Contar palavras, caracteres, linhas</li>
+                        <li>Palavra mais frequente</li>
+                        <li>Texto em maiúscula e minúscula</li>
+                    </ul>
+                </div>
+                
+                <div class="exercise">
+                    <h3>Exercício 5: Calculadora Financeira</h3>
+                    <p>Implemente uma calculadora que trabalha com juros compostos.</p>
+                    <p><strong>Requisitos:</strong></p>
+                    <ul>
+                        <li>Calcular juros simples e compostos</li>
+                        <li>Valor futuro e presente</li>
+                        <li>Formatação monetária</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="toggle-solutions">
+                <button class="solution-toggle">Ver Gabarito dos Exercícios</button>
+            </div>
+            
+            <div class="solutions" style="display: none;">
+                <div class="solution">
+                    <h3>Resposta 1: Análise de Vendas</h3>
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Análise de Vendas</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>void main() {
+  // Vendas mensais em milhares de reais
+  List<double> vendas = [45.5, 52.3, 38.7, 61.2, 48.9, 55.6, 
+                         72.1, 68.4, 51.3, 59.8, 66.7, 74.2];
+  List<String> meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+                        'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  
+  print('=== ANÁLISE DE VENDAS ANUAIS ===\n');
+  
+  // Calculando estatísticas
+  double total = vendas.reduce((a, b) => a + b);
+  double media = total / vendas.length;
+  double maior = vendas.reduce((a, b) => a > b ? a : b);
+  double menor = vendas.reduce((a, b) => a < b ? a : b);
+  
+  // Encontrando índices
+  int indiceMaior = vendas.indexOf(maior);
+  int indiceMenor = vendas.indexOf(menor);
+  
+  print('Total: R\$ ${total.toStringAsFixed(1)}k');
+  print('Média mensal: R\$ ${media.toStringAsFixed(1)}k');
+  print('Maior venda: R\$ ${maior.toStringAsFixed(1)}k em ${meses[indiceMaior]}');
+  print('Menor venda: R\$ ${menor.toStringAsFixed(1)}k em ${meses[indiceMenor]}');
+  
+  // Meses acima da média
+  print('\nMeses acima da média:');
+  for (int i = 0; i < vendas.length; i++) {
+    if (vendas[i] > media) {
+      print('- ${meses[i]}: R\$ ${vendas[i].toStringAsFixed(1)}k');
+    }
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="solution">
+                    <h3>Resposta 2: Catálogo de Produtos</h3>
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Catálogo de Produtos</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>void main() {
+  List<Map<String, dynamic>> produtos = [
+    {'nome': 'Notebook Dell', 'preco': 2500.0, 'categoria': 'informatica'},
+    {'nome': 'Smartphone Samsung', 'preco': 800.0, 'categoria': 'celular'},
+    {'nome': 'Tênis Nike', 'preco': 350.0, 'categoria': 'calçado'},
+    {'nome': 'Mouse Gamer', 'preco': 120.0, 'categoria': 'informatica'},
+    {'nome': 'Fone Bluetooth', 'preco': 200.0, 'categoria': 'audio'}
+  ];
+  
+  print('=== CATÁLOGO DE PRODUTOS ===\n');
+  
+  // Listando todos
+  produtos.asMap().forEach((index, produto) {
+    print('${index + 1}. ${produto['nome']} - R\$ ${produto['preco']} (${produto['categoria']})');
+  });
+  
+  // Mais caro e mais barato
+  var maisCaro = produtos.reduce((a, b) => a['preco'] > b['preco'] ? a : b);
+  var maisBarato = produtos.reduce((a, b) => a['preco'] < b['preco'] ? a : b);
+  
+  print('\nMais caro: ${maisCaro['nome']} - R\$ ${maisCaro['preco']}');
+  print('Mais barato: ${maisBarato['nome']} - R\$ ${maisBarato['preco']}');
+  
+  // Busca por categoria
+  String categoria = 'informatica';
+  var produtosCategoria = produtos.where((p) => p['categoria'] == categoria);
+  print('\nProdutos de $categoria:');
+  produtosCategoria.forEach((p) => print('- ${p['nome']}: R\$ ${p['preco']}'));
+  
+  // Faixa de preço
+  double min = 100, max = 500;
+  var produtosFaixa = produtos.where((p) => p['preco'] >= min && p['preco'] <= max);
+  print('\nEntre R\$ $min e R\$ $max:');
+  produtosFaixa.forEach((p) => print('- ${p['nome']}: R\$ ${p['preco']}'));
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="solution">
+                    <h3>Resposta 3: Sistema de Tags</h3>
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Sistema de Tags</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>void main() {
+  Set<String> tagsPost1 = {'programacao', 'dart', 'flutter', 'mobile'};
+  Set<String> tagsPost2 = {'programacao', 'javascript', 'web', 'react'};
+  
+  print('=== SISTEMA DE TAGS ===\n');
+  print('Post 1: $tagsPost1');
+  print('Post 2: $tagsPost2');
+  
+  // União - todas as tags
+  Set<String> todasTags = tagsPost1.union(tagsPost2);
+  print('\nTodas as tags: $todasTags');
+  print('Total de tags únicas: ${todasTags.length}');
+  
+  // Interseção - tags em comum
+  Set<String> tagsComuns = tagsPost1.intersection(tagsPost2);
+  print('\nTags em comum: $tagsComuns');
+  
+  // Diferença - exclusivas de cada post
+  Set<String> exclusivasPost1 = tagsPost1.difference(tagsPost2);
+  Set<String> exclusivasPost2 = tagsPost2.difference(tagsPost1);
+  
+  print('\nExclusivas do Post 1: $exclusivasPost1');
+  print('Exclusivas do Post 2: $exclusivasPost2');
+  
+  // Análise de popularidade
+  Map<String, int> popularidade = {};
+  for (String tag in todasTags) {
+    int count = 0;
+    if (tagsPost1.contains(tag)) count++;
+    if (tagsPost2.contains(tag)) count++;
+    popularidade[tag] = count;
+  }
+  
+  print('\nPopularidade das tags:');
+  popularidade.forEach((tag, count) {
+    String icon = count > 1 ? '🔥' : '⚡';
+    print('$icon $tag: $count posts');
+  });
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="solution">
+                    <h3>Resposta 4: Processador de Texto</h3>
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Processador de Texto</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>void main() {
+  String texto = '''
+  Dart é uma linguagem moderna e poderosa.
+  Ela foi criada pelo Google para desenvolvimento.
+  Com Dart você pode criar apps incríveis!
+  ''';
+  
+  print('=== PROCESSADOR DE TEXTO ===\n');
+  print('Texto original:\n$texto');
+  
+  String textoLimpo = texto.trim();
+  
+  // Estatísticas básicas
+  int caracteres = textoLimpo.length;
+  int caracteresSemEspaco = textoLimpo.replaceAll(' ', '').replaceAll('\n', '').length;
+  List<String> linhas = textoLimpo.split('\n').where((l) => l.trim().isNotEmpty).toList();
+  List<String> palavras = textoLimpo.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+  
+  print('\n📊 ESTATÍSTICAS:');
+  print('Caracteres: $caracteres');
+  print('Caracteres (sem espaços): $caracteresSemEspaco');
+  print('Linhas: ${linhas.length}');
+  print('Palavras: ${palavras.length}');
+  
+  // Palavra mais frequente
+  Map<String, int> frequencia = {};
+  for (String palavra in palavras) {
+    String palavraLimpa = palavra.toLowerCase().replaceAll(RegExp(r'[.,!?]'), '');
+    frequencia[palavraLimpa] = (frequencia[palavraLimpa] ?? 0) + 1;
+  }
+  
+  String palavraMaisFrequente = '';
+  int maiorFreq = 0;
+  frequencia.forEach((palavra, freq) {
+    if (freq > maiorFreq) {
+      maiorFreq = freq;
+      palavraMaisFrequente = palavra;
+    }
+  });
+  
+  print('\nPalavra mais frequente: "$palavraMaisFrequente" ($maiorFreq vezes)');
+  
+  // Transformações
+  print('\n🔄 TRANSFORMAÇÕES:');
+  print('MAIÚSCULO: ${textoLimpo.toUpperCase()}');
+  print('minúsculo: ${textoLimpo.toLowerCase()}');
+  
+  // Primeira letra de cada palavra em maiúscula
+  List<String> palavrasCapitalizadas = palavras.map((p) {
+    if (p.isEmpty) return p;
+    return p[0].toUpperCase() + p.substring(1).toLowerCase();
+  }).toList();
+  print('Capitalizado: ${palavrasCapitalizadas.join(' ')}');
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="solution">
+                    <h3>Resposta 5: Calculadora Financeira</h3>
+                    <div class="dartpad-container">
+                        <div class="dartpad-header">
+                            <span>DartPad - Calculadora Financeira</span>
+                            <div class="dartpad-actions">
+                                <button class="run-button"><i class="fas fa-play"></i> Executar</button>
+                                <button class="copy-button"><i class="fas fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            <pre><code>import 'dart:math' as math;
+
+void main() {
+  print('=== CALCULADORA FINANCEIRA ===\n');
+  
+  double capital = 1000.0;
+  double taxa = 0.12; // 12% ao ano
+  int anos = 5;
+  
+  print('💰 DADOS:');
+  print('Capital: ${formatarMoeda(capital)}');
+  print('Taxa: ${(taxa * 100).toStringAsFixed(1)}% ao ano');
+  print('Período: $anos anos\n');
+  
+  // Juros Simples
+  double jurosSimples = capital * taxa * anos;
+  double montanteSimples = capital + jurosSimples;
+  
+  print('📈 JUROS SIMPLES:');
+  print('Juros: ${formatarMoeda(jurosSimples)}');
+  print('Montante: ${formatarMoeda(montanteSimples)}');
+  
+  // Juros Compostos
+  double montanteComposto = capital * math.pow(1 + taxa, anos);
+  double jurosCompostos = montanteComposto - capital;
+  
+  print('\n📊 JUROS COMPOSTOS:');
+  print('Juros: ${formatarMoeda(jurosCompostos)}');
+  print('Montante: ${formatarMoeda(montanteComposto)}');
+  
+  // Comparação
+  double diferenca = montanteComposto - montanteSimples;
+  print('\n🔄 COMPARAÇÃO:');
+  print('Diferença: ${formatarMoeda(diferenca)}');
+  print('Vantagem dos juros compostos: ${((diferenca / montanteSimples) * 100).toStringAsFixed(1)}%');
+  
+  // Evolução ano a ano
+  print('\n📅 EVOLUÇÃO (Juros Compostos):');
+  for (int ano = 0; ano <= anos; ano++) {
+    double valor = capital * math.pow(1 + taxa, ano);
+    print('Ano $ano: ${formatarMoeda(valor)}');
+  }
+}
+
+String formatarMoeda(double valor) {
+  return 'R\$ ${valor.toStringAsFixed(2).replaceAll('.', ',')}';
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>11. Resumo</h2>
+            <div class="summary-points">
+                <h3>10 pontos-chave para memorizar:</h3>
+                <ol>
+                    <li><strong>List</strong> - Coleção ordenada que permite duplicatas, ideal para sequências</li>
+                    <li><strong>Map</strong> - Associa chaves únicas a valores, perfeito para dados estruturados</li>
+                    <li><strong>Set</strong> - Mantém apenas elementos únicos, excelente para operações matemáticas</li>
+                    <li><strong>String</strong> - Imutável, use métodos para transformações que retornam novas strings</li>
+                    <li><strong>Números</strong> - int para inteiros, double para decimais, num para ambos</li>
+                    <li><strong>Validação</strong> - Use tryParse() para conversões seguras de string para número</li>
+                    <li><strong>Iteração</strong> - Use métodos como where(), map(), forEach() ao invés de modificar durante loops</li>
+                    <li><strong>Performance</strong> - List para acesso por índice, Set para verificação de existência</li>
+                    <li><strong>Tipos</strong> - Sempre declare tipos específicos (List&lt;String&gt; ao invés de List)</li>
+                    <li><strong>Comparação</strong> - Use tolerância para comparar números decimais devido à precisão</li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>12. Glossário</h2>
+            <div class="glossary">
+                <div class="glossary-item">
+                    <strong>Coleção</strong>: Estrutura de dados que armazena múltiplos valores em uma única variável.
+                </div>
+                <div class="glossary-item">
+                    <strong>Elemento</strong>: Item individual armazenado dentro de uma coleção.
+                </div>
+                <div class="glossary-item">
+                    <strong>Imutável</strong>: Característica de objetos que não podem ser modificados após criação.
+                </div>
+                <div class="glossary-item">
+                    <strong>Índice</strong>: Posição numérica de um elemento em uma List, começando do 0.
+                </div>
+                <div class="glossary-item">
+                    <strong>Interpolação</strong>: Técnica para inserir valores de variáveis em strings usando $.
+                </div>
+                <div class="glossary-item">
+                    <strong>Iteração</strong>: Processo de percorrer todos os elementos de uma coleção.
+                </div>
+                <div class="glossary-item">
+                    <strong>Map Entry</strong>: Par chave-valor individual dentro de um Map.
+                </div>
+                <div class="glossary-item">
+                    <strong>Null-safety</strong>: Sistema do Dart que previne erros relacionados a valores nulos.
+                </div>
+                <div class="glossary-item">
+                    <strong>Parsing</strong>: Processo de conversão de dados de um formato para outro.
+                </div>
+                <div class="glossary-item">
+                    <strong>Type Safety</strong>: Garantia de que variáveis só aceitem valores do tipo correto.
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>13. Referências</h2>
+            <div class="references">
+                <ol>
+                    <li><a href="https://dart.dev/guides/language/language-tour#collections" target="_blank">Dart Language Tour - Collections</a></li>
+                    <li><a href="https://api.dart.dev/stable/dart-core/dart-core-library.html" target="_blank">Dart Core Library Documentation</a></li>
+                    <li><a href="https://dart.dev/guides/libraries/library-tour#collections" target="_blank">Dart Library Tour - Collections</a></li>
+                    <li><a href="https://dart.dev/effective-dart" target="_blank">Effective Dart Style Guide</a></li>
+                    <li><a href="https://dartpad.dev" target="_blank">DartPad Online Editor</a></li>
+                </ol>
+            </div>
+            
+            <div class="study-tip">
+                <p><strong>Preparação recomendada:</strong></p>
+                <ul class="feature-list">
+                    <li>Pratique todos os exercícios deste capítulo no DartPad</li>
+                    <li>Experimente combinar diferentes tipos de coleções em projetos</li>
+                    <li>Teste operações de Set com conjuntos de dados reais</li>
+                    <li>Implemente pequenos projetos usando Map para dados estruturados</li>
+                    <li>Pratique manipulação de strings com textos variados</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+    <script src="assets/js/script.js" type="module"></script>
+</body>
+</html>
